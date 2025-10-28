@@ -1,7 +1,7 @@
 import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { env } from '@/config/env.js';
 import { connectDatabase, connectRedis } from '@/config/index.js';
-import logger from '@/utils/logger.js';
+// import logger from '@/utils/logger.js';
 
 // Import plugins
 import cors from '@fastify/cors';
@@ -14,9 +14,10 @@ import swaggerUi from '@fastify/swagger-ui';
 // Import routes
 import authRoutes from '@/routes/auth.routes.js';
 import menuRoutes from '@/routes/menu.routes.js';
-import orderRoutes from '@/routes/order.routes.js';
+import orderRoutes from '@/routes/order.routes';
 import adminRoutes from '@/routes/admin.routes.js';
 import healthRoutes from '@/routes/health.routes.js';
+import testRoutes from '@/routes/test.routes.js';
 
 // Import middleware
 import { errorHandler } from '@/middleware/error.middleware.js';
@@ -24,7 +25,7 @@ import { authMiddleware } from '@/middleware/auth.middleware.js';
 
 export async function createApp(options: FastifyServerOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({
-    logger: logger.child({ service: 'rapchai-api' }),
+    logger: true,
     ...options,
   });
 
@@ -128,6 +129,7 @@ export async function createApp(options: FastifyServerOptions = {}): Promise<Fas
 
   // Register routes
   await app.register(healthRoutes, { prefix: '/api/health' });
+  await app.register(testRoutes, { prefix: '/api' });
   await app.register(authRoutes, { prefix: '/api/auth' });
   await app.register(menuRoutes, { prefix: '/api/menu' });
   await app.register(orderRoutes, { prefix: '/api/orders' });
@@ -160,7 +162,7 @@ export async function startServer(): Promise<void> {
   try {
     // Connect to external services
     await connectDatabase();
-    await connectRedis();
+    // await connectRedis(); // Temporarily disabled
 
     // Create and start the server
     const app = await createApp();
@@ -170,33 +172,33 @@ export async function startServer(): Promise<void> {
       host: env.HOST,
     });
 
-    logger.info(`🚀 Server running on http://${env.HOST}:${env.PORT}`);
-    logger.info(`📚 API Documentation available at http://${env.HOST}:${env.PORT}/docs`);
+    console.log(`🚀 Server running on http://${env.HOST}:${env.PORT}`);
+    console.log(`📚 API Documentation: http://${env.HOST}:${env.PORT}/docs`);
     
   } catch (error) {
-    logger.error('Failed to start server:', error);
+    console.error('Failed to start server:', error);
     process.exit(1);
   }
 }
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  logger.info('SIGTERM received, shutting down gracefully');
+  console.info('SIGTERM received, shutting down gracefully');
   process.exit(0);
 });
 
 process.on('SIGINT', async () => {
-  logger.info('SIGINT received, shutting down gracefully');
+  console.info('SIGINT received, shutting down gracefully');
   process.exit(0);
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  logger.fatal('Uncaught Exception:', error);
+  console.error('Uncaught Exception:', error);
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.fatal('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
 });

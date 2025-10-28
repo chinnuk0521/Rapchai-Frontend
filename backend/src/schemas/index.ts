@@ -16,7 +16,6 @@ export const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name too long'),
   email: emailSchema,
   password: passwordSchema,
-  phone: phoneSchema.optional(),
 });
 
 export const refreshTokenSchema = z.object({
@@ -76,7 +75,7 @@ export const createOrderSchema = z.object({
   customerPhone: phoneSchema,
   customerEmail: emailSchema.optional(),
   tableNumber: z.string().max(20, 'Table number too long').optional(),
-  orderType: z.enum(['DINE_IN', 'TAKEAWAY', 'DELIVERY']),
+  orderType: z.enum(['dine-in', 'takeaway', 'delivery']),
   notes: z.string().max(500, 'Notes too long').optional(),
   specialInstructions: z.string().max(500, 'Special instructions too long').optional(),
   items: z.array(z.object({
@@ -88,12 +87,12 @@ export const createOrderSchema = z.object({
 
 export const updateOrderStatusSchema = z.object({
   id: cuidSchema,
-  status: z.enum(['PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'COMPLETED', 'CANCELLED']),
+  status: z.enum(['received', 'preparing', 'ready', 'delivered', 'cancelled']),
 });
 
 export const updatePaymentStatusSchema = z.object({
   id: cuidSchema,
-  paymentStatus: z.enum(['PENDING', 'PAID', 'FAILED', 'REFUNDED']),
+  paymentStatus: z.enum(['pending', 'paid', 'failed', 'refunded']),
 });
 
 // Event schemas
@@ -135,17 +134,14 @@ export const createUserSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name too long'),
   email: emailSchema,
   password: passwordSchema,
-  phone: phoneSchema.optional(),
-  role: z.enum(['ADMIN', 'STAFF', 'CUSTOMER']).default('CUSTOMER'),
+  role: z.enum(['ADMIN', 'CUSTOMER']).default('CUSTOMER'),
 });
 
 export const updateUserSchema = z.object({
   id: cuidSchema,
   name: z.string().min(2).max(100).optional(),
   email: emailSchema.optional(),
-  phone: phoneSchema.optional(),
-  role: z.enum(['ADMIN', 'STAFF', 'CUSTOMER']).optional(),
-  isActive: z.boolean().optional(),
+  role: z.enum(['ADMIN', 'CUSTOMER']).optional(),
 });
 
 // Query schemas
@@ -155,9 +151,9 @@ export const paginationSchema = z.object({
 });
 
 export const orderQuerySchema = z.object({
-  status: z.enum(['PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'COMPLETED', 'CANCELLED']).optional(),
-  orderType: z.enum(['DINE_IN', 'TAKEAWAY', 'DELIVERY']).optional(),
-  paymentStatus: z.enum(['PENDING', 'PAID', 'FAILED', 'REFUNDED']).optional(),
+  status: z.enum(['received', 'preparing', 'ready', 'delivered', 'cancelled']).optional(),
+  orderType: z.enum(['dine-in', 'takeaway', 'delivery']).optional(),
+  paymentStatus: z.enum(['pending', 'paid', 'failed', 'refunded']).optional(),
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
 }).merge(paginationSchema);

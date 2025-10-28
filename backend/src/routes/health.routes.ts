@@ -1,9 +1,9 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
 import { healthCheckDatabase, healthCheckRedis } from '@/config/index.js';
 import { asyncHandler } from '@/middleware/error.middleware.js';
-import logger from '@/utils/logger.js';
+// import logger from '@/utils/logger.js';
 
-export async function healthRoutes(fastify: FastifyInstance) {
+async function healthRoutes(fastify: FastifyInstance) {
   // Basic health check
   fastify.get('/', {
     schema: {
@@ -27,7 +27,7 @@ export async function healthRoutes(fastify: FastifyInstance) {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development',
+      environment: process.env['NODE_ENV'] || 'development',
       version: '1.0.0',
     });
   }));
@@ -84,7 +84,7 @@ export async function healthRoutes(fastify: FastifyInstance) {
       status: overallStatus,
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development',
+      environment: process.env['NODE_ENV'] || 'development',
       version: '1.0.0',
       responseTime,
       services: {
@@ -230,3 +230,5 @@ http_requests_total{method="GET",status="200"} 1
       .send(metrics);
   }));
 }
+
+export default healthRoutes;

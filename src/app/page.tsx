@@ -3,6 +3,7 @@ import HeroSlider from "./components/HeroSlider";
 import PromoTiles from "./components/PromoTiles";
 import HomeFooter from "./components/HomeFooter";
 import { IMG } from "./lib/images";
+import AdminModeButton from "./components/AdminModeButton";
 
 function Section({ title, children, cta }: { title: string; children: React.ReactNode; cta?: React.ReactNode }) {
   return (
@@ -22,6 +23,11 @@ export default function Home() {
       <HeroSlider />
       <div className="pb-20 bg-[var(--rc-creamy-beige)]">
         <div className="w-[95%] mx-auto px-4">
+        {/* Admin Mode Button */}
+        <div className="mt-8 flex justify-end">
+          <AdminModeButton />
+        </div>
+        
         <Section title="Our Philosophy" cta={<Link href="/about" className="text-lg font-bold text-[var(--rc-orange)] hover:text-[var(--rc-espresso-brown)] transition-colors underline">Read More</Link>}>
           <p className="max-w-4xl text-lg text-[var(--rc-text-secondary)] font-medium leading-relaxed">At Rapchai, food starts conversations in our cozy, vibrant, and affordable cafe. Enjoy a healthy continental menu, meet new people, and vibe at our rap music events.</p>
         </Section>

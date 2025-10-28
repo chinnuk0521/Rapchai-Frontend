@@ -3,18 +3,26 @@ import { env } from './env.js';
 
 export const redis = new Redis(env.REDIS_URL, {
   password: env.REDIS_PASSWORD,
-  retryDelayOnFailover: 100,
   enableReadyCheck: false,
   maxRetriesPerRequest: null,
   lazyConnect: true,
+  connectTimeout: 5000,
+  retryDelayOnClusterDown: 300,
+  enableOfflineQueue: false,
+  maxRetriesPerRequest: 3,
 });
-
+  
 export const pubRedis = new Redis(env.REDIS_URL, {
   password: env.REDIS_PASSWORD,
   retryDelayOnFailover: 100,
   enableReadyCheck: false,
   maxRetriesPerRequest: null,
   lazyConnect: true,
+  connectTimeout: 5000,
+  retryDelayOnClusterDown: 300,
+  maxRetriesPerRequest: 3,
+  retryDelayOnFailover: 100,
+  enableOfflineQueue: false,
 });
 
 export const subRedis = new Redis(env.REDIS_URL, {
@@ -23,6 +31,11 @@ export const subRedis = new Redis(env.REDIS_URL, {
   enableReadyCheck: false,
   maxRetriesPerRequest: null,
   lazyConnect: true,
+  connectTimeout: 5000,
+  retryDelayOnClusterDown: 300,
+  maxRetriesPerRequest: 3,
+  retryDelayOnFailover: 100,
+  enableOfflineQueue: false,
 });
 
 export async function connectRedis(): Promise<void> {
@@ -34,8 +47,8 @@ export async function connectRedis(): Promise<void> {
     ]);
     console.log('✅ Redis connected successfully');
   } catch (error) {
-    console.error('❌ Redis connection failed:', error);
-    throw error;
+    console.warn('⚠️ Redis connection failed, continuing without Redis:', error.message);
+    // Don't throw error, just log warning
   }
 }
 
@@ -111,6 +124,17 @@ export class CacheService {
       await redis.flushdb();
     } catch (error) {
       console.error('Cache flush error:', error);
+    }
+  }
+
+  static async delPattern(pattern: string): Promise<void> {
+    try {
+      const keys = await redis.keys(pattern);
+      if (keys.length > 0) {
+        await redis.del(...keys);
+      }
+    } catch (error) {
+      console.error('Cache delete pattern error:', error);
     }
   }
 }

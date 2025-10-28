@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import NavBar from "./components/NavBar";
 import ConditionalFooter from "./components/ConditionalFooter";
+import { AuthProvider } from "./lib/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -102,11 +103,13 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <JsonLd />
-        <NavBar />
-        <main className="w-full pt-16">
-        {children}
-        </main>
-        <ConditionalFooter />
+        <AuthProvider>
+          <NavBar />
+          <main className="w-full pt-16">
+            {children}
+          </main>
+          <ConditionalFooter />
+        </AuthProvider>
       </body>
     </html>
   );

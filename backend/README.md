@@ -1,41 +1,112 @@
-# Rapchai Café Backend API
+# Rapchai Backend API
 
-A production-ready backend API for Rapchai Café built with Fastify, TypeScript, Prisma, and PostgreSQL.
+A production-ready backend API for Rapchai Café built with Fastify, TypeScript, Prisma, and Redis.
 
-## 🚀 Features
+## Features
 
-- **Fastify Framework**: High-performance Node.js web framework
-- **TypeScript**: Full type safety and modern JavaScript features
-- **Prisma ORM**: Type-safe database access with PostgreSQL
-- **Redis Integration**: Caching, pub/sub, and session management
-- **JWT Authentication**: Secure token-based authentication with refresh tokens
-- **Role-Based Access Control**: Admin, Staff, and Customer roles
-- **WebSocket Support**: Real-time communication with Redis adapter
-- **Background Jobs**: BullMQ for async task processing
-- **File Upload**: MinIO/S3-compatible storage
-- **API Documentation**: OpenAPI/Swagger documentation
-- **Comprehensive Testing**: Unit, integration, and E2E tests
-- **Docker Support**: Containerized deployment
-- **CI/CD Pipeline**: GitHub Actions for automated testing and deployment
-- **Security**: Helmet, rate limiting, CORS, and input validation
-- **Monitoring**: Structured logging with Pino and Sentry integration
-- **Health Checks**: Kubernetes-ready health and readiness endpoints
+- **Authentication & Authorization**: JWT-based auth with role-based access control
+- **Menu Management**: Full CRUD operations for categories and menu items
+- **Order Management**: Complete order lifecycle with status tracking
+- **Admin Dashboard**: Analytics, event management, and system settings
+- **Caching**: Redis-based caching for improved performance
+- **Rate Limiting**: Built-in rate limiting for API protection
+- **File Uploads**: Support for image uploads with MinIO/S3
+- **Health Checks**: Comprehensive health monitoring endpoints
+- **API Documentation**: Auto-generated Swagger documentation
 
-## 📋 Prerequisites
+## Tech Stack
+
+- **Runtime**: Node.js 20+
+- **Framework**: Fastify 5.x
+- **Language**: TypeScript
+- **Database**: SQLite (with Prisma ORM)
+- **Cache**: Redis
+- **Authentication**: JWT with Argon2 password hashing
+- **Documentation**: Swagger/OpenAPI
+- **Testing**: Jest
+- **Linting**: ESLint + Prettier
+
+## API Endpoints
+
+### Authentication (`/api/auth`)
+- `POST /register` - Register new user
+- `POST /login` - User login
+- `POST /refresh` - Refresh access token
+- `POST /logout` - User logout
+- `POST /change-password` - Change password
+- `GET /me` - Get current user profile
+- `POST /admin/users` - Create user (admin only)
+- `GET /admin/users` - Get all users (admin only)
+- `GET /admin/users/:id` - Get user by ID (admin only)
+- `PUT /admin/users/:id` - Update user (admin only)
+
+### Menu (`/api/menu`)
+- `GET /categories` - Get all categories
+- `GET /categories/:id` - Get category by ID
+- `POST /categories` - Create category (admin only)
+- `PUT /categories/:id` - Update category (admin only)
+- `DELETE /categories/:id` - Delete category (admin only)
+- `GET /items` - Get all menu items
+- `GET /items/:id` - Get menu item by ID
+- `POST /items` - Create menu item (admin only)
+- `PUT /items/:id` - Update menu item (admin only)
+- `DELETE /items/:id` - Delete menu item (admin only)
+- `PATCH /items/:id/toggle-availability` - Toggle item availability (admin only)
+- `GET /categories/:id/items` - Get items by category
+- `GET /search` - Search menu items
+
+### Orders (`/api/orders`)
+- `POST /` - Create new order
+- `GET /` - Get all orders (admin only)
+- `GET /:id` - Get order by ID
+- `GET /customer/:phone` - Get orders by customer phone
+- `PATCH /:id/status` - Update order status (admin only)
+- `PATCH /:id/payment-status` - Update payment status (admin only)
+- `PATCH /:id/cancel` - Cancel order
+- `GET /analytics/summary` - Get order analytics (admin only)
+- `GET /status/:status` - Get orders by status (admin only)
+- `GET /today` - Get today's orders (admin only)
+
+### Admin (`/api/admin`)
+- `GET /dashboard` - Get dashboard analytics (admin only)
+- `GET /events` - Get all events (admin only)
+- `GET /events/:id` - Get event by ID (admin only)
+- `POST /events` - Create event (admin only)
+- `PUT /events/:id` - Update event (admin only)
+- `DELETE /events/:id` - Delete event (admin only)
+- `GET /bookings` - Get all bookings (admin only)
+- `GET /bookings/:id` - Get booking by ID (admin only)
+- `PATCH /bookings/:id/status` - Update booking status (admin only)
+- `GET /media` - Get all media (admin only)
+- `POST /media/upload` - Upload media (admin only)
+- `DELETE /media/:id` - Delete media (admin only)
+- `GET /settings` - Get system settings (admin only)
+- `PUT /settings` - Update system settings (admin only)
+- `GET /reports/sales` - Get sales report (admin only)
+- `GET /reports/customers` - Get customer analytics (admin only)
+
+### Health (`/api/health`)
+- `GET /` - Basic health check
+- `GET /detailed` - Detailed health check with service status
+- `GET /ready` - Readiness check for Kubernetes
+- `GET /live` - Liveness check for Kubernetes
+- `GET /metrics` - Prometheus metrics endpoint
+
+## Setup Instructions
+
+### Prerequisites
 
 - Node.js 20+ 
-- PostgreSQL 15+
-- Redis 7+
-- Docker & Docker Compose (for local development)
+- npm 10+
+- Redis server
+- SQLite (included with Node.js)
 
-## 🛠️ Installation
-
-### Local Development
+### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd rapchai-backend
+   git clone https://github.com/chinnuk0521/Rapchai.git
+   cd Rapchai/backend
    ```
 
 2. **Install dependencies**
@@ -46,306 +117,148 @@ A production-ready backend API for Rapchai Café built with Fastify, TypeScript,
 3. **Set up environment variables**
    ```bash
    cp env.example .env
-   # Edit .env with your configuration
+   ```
+   
+   Edit `.env` file with your configuration:
+   ```env
+   NODE_ENV=development
+   PORT=3001
+   HOST=0.0.0.0
+   DATABASE_URL="file:./dev.db"
+   REDIS_URL=redis://localhost:6379
+   JWT_SECRET=your-super-secret-jwt-key-at-least-32-characters-long
+   JWT_REFRESH_SECRET=your-super-secret-refresh-key-at-least-32-characters-long
    ```
 
-4. **Start services with Docker**
+4. **Set up the database**
    ```bash
-   npm run docker:run
-   ```
-
-5. **Run database migrations**
-   ```bash
+   npm run prisma:generate
    npm run prisma:migrate
-   ```
-
-6. **Seed the database**
-   ```bash
    npm run prisma:seed
    ```
 
-7. **Start the development server**
+5. **Start Redis server**
+   ```bash
+   redis-server
+   ```
+
+6. **Start the development server**
    ```bash
    npm run dev
    ```
 
-The API will be available at `http://localhost:3001` with documentation at `http://localhost:3001/docs`.
+The API will be available at `http://localhost:3001`
+API documentation will be available at `http://localhost:3001/docs`
 
-### Production Deployment
+## Scripts
 
-1. **Build the application**
-   ```bash
-   npm run build
-   ```
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run test` - Run tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage
+- `npm run test:e2e` - Run end-to-end tests
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint errors
+- `npm run format` - Format code with Prettier
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:migrate` - Run database migrations
+- `npm run prisma:migrate:deploy` - Deploy migrations to production
+- `npm run prisma:seed` - Seed database with sample data
+- `npm run prisma:studio` - Open Prisma Studio
+- `npm run type-check` - Run TypeScript type checking
 
-2. **Run database migrations**
-   ```bash
-   npm run prisma:migrate:deploy
-   ```
+## Database Schema
 
-3. **Start the production server**
-   ```bash
-   npm start
-   ```
+The application uses Prisma ORM with SQLite database. Key models include:
 
-## 🏗️ Architecture
+- **User**: User accounts with authentication
+- **Category**: Menu categories
+- **MenuItem**: Individual menu items
+- **Order**: Customer orders
+- **OrderItem**: Items within orders
+- **Event**: Restaurant events
+- **Booking**: Event bookings
+- **Media**: File uploads
 
-### Project Structure
+## Authentication
 
-```
-backend/
-├── src/
-│   ├── config/          # Configuration files
-│   ├── controllers/      # Request handlers
-│   ├── middleware/       # Express middleware
-│   ├── routes/          # API routes
-│   ├── services/        # Business logic
-│   ├── schemas/         # Validation schemas
-│   ├── utils/           # Utility functions
-│   ├── jobs/            # Background jobs
-│   ├── types/           # TypeScript types
-│   └── plugins/         # Fastify plugins
-├── prisma/              # Database schema and migrations
-├── tests/               # Test files
-├── docker/              # Docker configuration
-└── docs/                # Documentation
-```
+The API uses JWT-based authentication with:
 
-### Database Schema
+- **Access Tokens**: Short-lived (15 minutes) for API access
+- **Refresh Tokens**: Long-lived (7 days) for token renewal
+- **Password Hashing**: Argon2id for secure password storage
+- **Role-based Access**: ADMIN and CUSTOMER roles
 
-The application uses PostgreSQL with the following main entities:
-
-- **Users**: Authentication and user management
-- **Categories**: Menu categories
-- **MenuItems**: Food and beverage items
-- **Orders**: Customer orders
-- **OrderItems**: Individual items in orders
-- **Events**: Special events and bookings
-- **Bookings**: Event reservations
-- **Media**: File uploads and storage
-
-### API Endpoints
-
-#### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Refresh access token
-- `POST /api/auth/logout` - User logout
-- `POST /api/auth/change-password` - Change password
-- `GET /api/auth/me` - Get current user profile
-
-#### Menu Management
-- `GET /api/menu/categories` - Get all categories
-- `POST /api/menu/categories` - Create category (admin)
-- `PUT /api/menu/categories/:id` - Update category (admin)
-- `DELETE /api/menu/categories/:id` - Delete category (admin)
-- `GET /api/menu/items` - Get menu items
-- `POST /api/menu/items` - Create menu item (admin)
-- `PUT /api/menu/items/:id` - Update menu item (admin)
-- `DELETE /api/menu/items/:id` - Delete menu item (admin)
-
-#### Order Management
-- `GET /api/orders` - Get orders (admin/staff)
-- `POST /api/orders` - Create new order
-- `GET /api/orders/:id` - Get order details
-- `PUT /api/orders/:id/status` - Update order status (admin/staff)
-- `PUT /api/orders/:id/payment` - Update payment status (admin/staff)
-
-#### Admin Functions
-- `GET /api/admin/users` - Get all users (admin)
-- `POST /api/admin/users` - Create user (admin)
-- `PUT /api/admin/users/:id` - Update user (admin)
-- `GET /api/admin/stats` - Get system statistics (admin)
-
-#### Health & Monitoring
-- `GET /api/health` - Basic health check
-- `GET /api/health/detailed` - Detailed health check
-- `GET /api/health/ready` - Readiness check
-- `GET /api/health/live` - Liveness check
-- `GET /api/health/metrics` - Prometheus metrics
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment mode | `development` |
-| `PORT` | Server port | `3001` |
-| `HOST` | Server host | `0.0.0.0` |
-| `DATABASE_URL` | PostgreSQL connection string | Required |
-| `REDIS_URL` | Redis connection string | `redis://localhost:6379` |
-| `JWT_SECRET` | JWT signing secret | Required |
-| `JWT_REFRESH_SECRET` | JWT refresh secret | Required |
-| `MINIO_ENDPOINT` | MinIO server endpoint | `localhost` |
-| `MINIO_ACCESS_KEY` | MinIO access key | `minioadmin` |
-| `MINIO_SECRET_KEY` | MinIO secret key | `minioadmin` |
-| `SENTRY_DSN` | Sentry error tracking DSN | Optional |
-
-### Database Configuration
-
-The application uses Prisma ORM with PostgreSQL. Database configuration is handled through the `DATABASE_URL` environment variable.
-
-### Redis Configuration
+## Caching
 
 Redis is used for:
-- Session storage
-- Caching
-- Pub/sub messaging
-- Background job queues
 
-## 🧪 Testing
+- User session caching
+- Menu item caching
+- Order status caching
+- API response caching
 
-### Running Tests
+## Rate Limiting
 
-```bash
-# Unit tests
-npm run test
+Built-in rate limiting protects against abuse:
 
-# Unit tests with coverage
-npm run test:coverage
+- Default: 100 requests per minute per IP
+- Configurable via environment variables
+- Different limits for different endpoints
 
-# E2E tests
-npm run test:e2e
+## Error Handling
 
-# Watch mode
-npm run test:watch
-```
+Comprehensive error handling with:
 
-### Test Structure
+- Custom error classes
+- Structured error responses
+- Request validation with Zod
+- Database error mapping
+- JWT error handling
 
-- **Unit Tests**: Test individual functions and services
-- **Integration Tests**: Test API endpoints and database interactions
-- **E2E Tests**: Test complete user workflows
+## Monitoring
 
-## 🐳 Docker
+Health check endpoints for monitoring:
 
-### Local Development
+- Basic health check
+- Detailed service status
+- Kubernetes readiness/liveness probes
+- Prometheus metrics
 
-```bash
-# Start all services
-npm run docker:run
-
-# Stop all services
-npm run docker:down
-
-# Build Docker image
-npm run docker:build
-```
-
-### Production Deployment
-
-The application includes a production-ready Dockerfile optimized for:
-- Multi-stage builds
-- Non-root user execution
-- Health checks
-- Security best practices
-
-## 🚀 Deployment
-
-### Kubernetes
-
-The application is designed to be deployed on Kubernetes with:
-- Health checks (`/api/health/ready`, `/api/health/live`)
-- Prometheus metrics (`/api/health/metrics`)
-- Graceful shutdown handling
-- Horizontal scaling support
-
-### Cloud Platforms
-
-The application can be deployed on:
-- **Render**: Use the provided Dockerfile
-- **Vercel**: Serverless deployment
-- **Heroku**: Container deployment
-- **AWS ECS/EKS**: Container orchestration
-- **Google Cloud Run**: Serverless containers
-
-## 📊 Monitoring
-
-### Logging
-
-The application uses structured JSON logging with Pino:
-- Request/response logging
-- Error tracking
-- Performance metrics
-- Security events
-
-### Error Tracking
-
-Sentry integration for:
-- Error monitoring
-- Performance tracking
-- Release management
-- User feedback
-
-### Metrics
-
-Prometheus-compatible metrics endpoint:
-- HTTP request metrics
-- Database connection metrics
-- Memory usage
-- CPU usage
-- Custom business metrics
-
-## 🔒 Security
-
-### Authentication & Authorization
-
-- JWT-based authentication
-- Refresh token rotation
-- Role-based access control
-- Password hashing with Argon2
-
-### Security Headers
+## Security Features
 
 - Helmet.js for security headers
 - CORS configuration
 - Rate limiting
-- Input validation with Zod
-- SQL injection prevention (Prisma)
+- Input validation
+- SQL injection protection (Prisma)
+- XSS protection
+- CSRF protection
 
-### Data Protection
+## Production Deployment
 
-- Environment variable validation
-- Secure password hashing
-- Token expiration
-- Session management
+For production deployment:
 
-## 🤝 Contributing
+1. Set `NODE_ENV=production`
+2. Use a production database (PostgreSQL recommended)
+3. Configure proper JWT secrets
+4. Set up Redis cluster
+5. Configure file storage (MinIO/S3)
+6. Set up monitoring and logging
+7. Use a reverse proxy (nginx)
+8. Enable HTTPS
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass
+4. Add tests
+5. Run linting and tests
 6. Submit a pull request
 
-### Development Guidelines
+## License
 
-- Follow TypeScript best practices
-- Write comprehensive tests
-- Use conventional commit messages
-- Update documentation
-- Follow the existing code style
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue on GitHub
-- Contact the development team
-- Check the documentation
-
-## 🔄 Changelog
-
-### v1.0.0
-- Initial release
-- Complete API implementation
-- Authentication system
-- Order management
-- Admin dashboard
-- Docker support
-- CI/CD pipeline
+This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
