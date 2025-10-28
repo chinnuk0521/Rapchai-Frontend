@@ -29,16 +29,16 @@ export async function authMiddleware(
     const token = authHeader.substring(7);
     const payload = JWTService.verifyAccessToken(token);
 
-    // Verify user still exists and is active
+    // Verify user still exists
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
-      select: { id: true, email: true, role: true, isActive: true },
+      select: { id: true, email: true, role: true },
     });
 
-    if (!user || !user.isActive) {
+    if (!user) {
       return reply.status(401).send({
         error: 'Unauthorized',
-        message: 'User not found or inactive',
+        message: 'User not found',
         statusCode: 401,
       });
     }
@@ -74,7 +74,7 @@ export async function adminMiddleware(
 
     const user = (request as AuthenticatedRequest).user;
     
-    if (user.role !== 'ADMIN' && user.role !== 'STAFF') {
+    if (user.role !== 'ADMIN') {
       return reply.status(403).send({
         error: 'Forbidden',
         message: 'Admin access required',

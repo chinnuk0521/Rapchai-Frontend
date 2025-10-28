@@ -113,7 +113,6 @@ model MenuItem {
   isVeg       Boolean  @default(true)
   isAvailable Boolean  @default(true)
   isActive    Boolean  @default(true)
-  allergens   String[]
   calories    Int?
   prepTime    Int? // in minutes
   categoryId  String

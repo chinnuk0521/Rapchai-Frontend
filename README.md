@@ -1,36 +1,186 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rapchai Cafe - Restaurant Management System
 
-## Getting Started
+A complete restaurant management system with separate customer and admin applications, built with Next.js, TypeScript, and a Fastify backend.
 
-First, run the development server:
+## 🏗️ Architecture
 
+This project consists of three main components:
+
+1. **Customer App** (`/`) - Customer-facing website for browsing menu, placing orders, and viewing events
+2. **Admin App** (`/admin`) - Staff dashboard for managing orders, menu, and analytics  
+3. **Backend API** (`/backend`) - Fastify-based REST API with PostgreSQL database
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database
+- npm or yarn
+
+### Installation
+
+1. **Clone and install dependencies:**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd rapchai
+npm install
+cd admin && npm install
+cd ../backend && npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up the database:**
+```bash
+# Copy environment file
+cp backend/env.example backend/.env
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Update DATABASE_URL in backend/.env with your PostgreSQL connection string
+# Example: DATABASE_URL="postgresql://username:password@localhost:5432/rapchai_db?schema=public"
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Run migrations and seed data
+cd backend
+npx prisma migrate dev
+npx prisma db seed
+```
 
-## Learn More
+3. **Start all services:**
+```bash
+# From the root directory
+npm run dev:all
+```
 
-To learn more about Next.js, take a look at the following resources:
+This will start:
+- Customer app on `http://localhost:3000`
+- Admin app on `http://localhost:3002` 
+- Backend API on `http://localhost:3001`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📱 Applications
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Customer App (Port 3000)
+- **Menu browsing** with categories and filters
+- **Order placement** with cart functionality
+- **Event listings** and booking
+- **Responsive design** for mobile and desktop
 
-## Deploy on Vercel
+### Admin App (Port 3002)
+- **Order management** - view and update order statuses
+- **Menu management** - add/edit/delete items and categories
+- **Bulk upload** - CSV import for menu items
+- **Image management** - upload and manage item images
+- **Analytics** - daily sales and reports
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Admin Credentials:**
+- Username: `admin`
+- Password: `rapchai123`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Backend API (Port 3001)
+- **RESTful API** with Fastify framework
+- **PostgreSQL** database with Prisma ORM
+- **JWT authentication** for secure endpoints
+- **Comprehensive error handling** and validation
+
+## 🛠️ Available Scripts
+
+### Root Level
+- `npm run dev` - Start customer app only
+- `npm run dev:admin` - Start admin app only  
+- `npm run dev:all` - Start both apps concurrently
+- `npm run build` - Build customer app
+- `npm run build:admin` - Build admin app
+- `npm run build:all` - Build both apps
+
+### Backend
+- `npm run dev` - Start API server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npx prisma migrate dev` - Run database migrations
+- `npx prisma db seed` - Seed database with sample data
+
+## 🗄️ Database Schema
+
+The system uses PostgreSQL with the following main entities:
+
+- **Users** - Customer and admin accounts
+- **Categories** - Menu item categories
+- **MenuItems** - Individual menu items with pricing
+- **Orders** - Customer orders with items
+- **Events** - Restaurant events and bookings
+- **Bookings** - Event reservations
+
+## 🔧 Configuration
+
+### Environment Variables
+
+**Backend** (`backend/.env`):
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/rapchai_db?schema=public"
+JWT_SECRET="your-jwt-secret"
+JWT_REFRESH_SECRET="your-refresh-secret"
+ADMIN_PASSWORD="admin123"
+```
+
+**Frontend** (both apps):
+```env
+NEXT_PUBLIC_API_URL="http://localhost:3001/api"
+```
+
+## 🚀 Deployment
+
+### Customer App
+1. Build: `npm run build`
+2. Deploy to Vercel, Netlify, or your preferred platform
+
+### Admin App  
+1. Build: `npm run build:admin`
+2. Deploy separately for enhanced security
+
+### Backend API
+1. Build: `npm run build`
+2. Deploy to Railway, Heroku, or your preferred platform
+3. Set up PostgreSQL database
+4. Run migrations: `npx prisma migrate deploy`
+
+## 🎨 Features
+
+### Customer Features
+- ✅ Responsive menu browsing
+- ✅ Shopping cart functionality
+- ✅ Order placement with multiple payment options
+- ✅ Event listings and booking
+- ✅ Real-time order tracking
+- ✅ Mobile-optimized interface
+
+### Admin Features
+- ✅ Order management dashboard
+- ✅ Menu item CRUD operations
+- ✅ Category management
+- ✅ Bulk CSV upload
+- ✅ Image upload and management
+- ✅ Sales analytics and reports
+- ✅ User management
+
+### Technical Features
+- ✅ TypeScript for type safety
+- ✅ Tailwind CSS for styling
+- ✅ Prisma ORM for database operations
+- ✅ JWT authentication
+- ✅ RESTful API design
+- ✅ Error handling and validation
+- ✅ Responsive design
+- ✅ SEO optimization
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For support or questions, please open an issue in the GitHub repository.

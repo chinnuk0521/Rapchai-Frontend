@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
+import RobustImage from "../../components/RobustImage";
 import { IMG } from "../../lib/images";
 import Cart from "../../components/Cart";
-
-type MenuItem = { id: number; title: string; veg: boolean; price: number; category: string };
+import { useMenuData } from "../../lib/hooks";
+import type { MenuItem, Category } from "../../lib/types";
 
 const getImageForCategory = (category: string): string => {
   switch (category) {
@@ -21,13 +21,48 @@ const getImageForCategory = (category: string): string => {
   }
 };
 
-export default function MenuClient({ items, categories }: { items: MenuItem[]; categories: string[] }) {
+export default function MenuClient() {
+  const { menuItems, categories, loading, refetch } = useMenuData();
   const [vegOnly, setVegOnly] = useState<boolean | null>(null);
   const [active, setActive] = useState<string | "All">("All");
+  
+  // Use API data only - no fallback to static data
+  const items = menuItems;
+  const categoryNames = categories.map(cat => cat.name);
   
   const filtered = items
     .filter((it) => (vegOnly === null ? true : vegOnly ? it.veg : !it.veg))
     .filter((it) => (active === "All" ? true : it.category === active));
+
+  // Loading state
+  if (loading.isLoading && items.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--rc-orange)] mx-auto mb-4"></div>
+          <p className="text-[var(--rc-text-secondary)]">Loading menu...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (loading.error && items.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 max-w-md mx-auto">
+          <p className="text-red-600 font-semibold mb-2">Failed to load menu</p>
+          <p className="text-red-500 text-sm mb-4">{loading.error}</p>
+          <button 
+            onClick={refetch}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -81,7 +116,7 @@ export default function MenuClient({ items, categories }: { items: MenuItem[]; c
         <div className="space-y-4">
           <div className="text-sm font-semibold text-[var(--rc-text-secondary)]">Categories:</div>
           <div className="flex flex-wrap gap-3">
-            {["All",...categories].map((c) => (
+            {["All",...categoryNames].map((c) => (
               <button 
                 key={c} 
                 onClick={() => setActive(c as typeof active)} 
@@ -102,9 +137,9 @@ export default function MenuClient({ items, categories }: { items: MenuItem[]; c
           {filtered.map((it) => (
             <div key={it.id} className="group rounded-3xl bg-gradient-to-br from-white to-[var(--rc-creamy-beige)] shadow-2xl ring-2 ring-[var(--rc-orange)]/20 overflow-hidden hover:shadow-3xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2">
               <div className="relative h-64 overflow-hidden">
-                <Image
-                  src={getImageForCategory(it.category)}
-                  alt={it.title}
+                <RobustImage
+                  src={getImageForCategory(it.category?.name || it.category)}
+                  alt={it.name || it.title}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -126,12 +161,12 @@ export default function MenuClient({ items, categories }: { items: MenuItem[]; c
               </div>
               <div className="p-8">
                 <div className="flex items-start justify-between mb-4">
-                  <h3 className="font-black text-[var(--rc-espresso-brown)] text-xl leading-tight">{it.title}</h3>
+                  <h3 className="font-black text-[var(--rc-espresso-brown)] text-xl leading-tight">{it.name || it.title}</h3>
                   <div className="text-2xl font-black text-[var(--rc-orange)] ml-4">₹{it.price}</div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-[var(--rc-text-secondary)] bg-[var(--rc-creamy-beige)] px-3 py-1 rounded-full">
-                    {it.category}
+                    {it.category?.name || it.category}
                   </span>
                   <AddToCartButton item={it} />
                 </div>
@@ -157,14 +192,24 @@ export default function MenuClient({ items, categories }: { items: MenuItem[]; c
 }
 
 // Add to Cart Button Component
-function AddToCartButton({ item }: { item: MenuItem }) {
+function AddToCartButton({ item }: { item: any }) {
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = () => {
     setIsAdding(true);
     
+    // Convert API data to frontend format if needed
+    const cartItem = {
+      id: item.id,
+      title: item.name || item.title,
+      veg: item.veg,
+      price: item.price,
+      category: item.category?.name || item.category,
+      available: item.available !== false, // Default to true if not specified
+    };
+    
     // Dispatch custom event to add item to cart
-    const event = new CustomEvent('addToCart', { detail: item });
+    const event = new CustomEvent('addToCart', { detail: cartItem });
     window.dispatchEvent(event);
     
     setTimeout(() => {
@@ -172,13 +217,19 @@ function AddToCartButton({ item }: { item: MenuItem }) {
     }, 1000);
   };
 
+  const isAvailable = item.available !== false;
+
   return (
     <button 
       onClick={handleAddToCart}
-      disabled={isAdding}
-      className="text-[var(--rc-orange)] hover:text-[var(--rc-espresso-brown)] transition-colors font-bold text-sm group-hover:scale-110 transform duration-300 disabled:opacity-50"
+      disabled={isAdding || !isAvailable}
+      className={`transition-colors font-bold text-sm group-hover:scale-110 transform duration-300 disabled:opacity-50 ${
+        isAvailable 
+          ? 'text-[var(--rc-orange)] hover:text-[var(--rc-espresso-brown)]' 
+          : 'text-gray-400 cursor-not-allowed'
+      }`}
     >
-      {isAdding ? 'Added!' : 'Add to Cart →'}
+      {!isAvailable ? 'Unavailable' : isAdding ? 'Added!' : 'Add to Cart →'}
     </button>
   );
 }

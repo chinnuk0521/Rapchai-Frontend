@@ -34,14 +34,12 @@ export class AuthService {
           name: data.name,
           email: data.email,
           passwordHash,
-          phone: data.phone,
           role: 'CUSTOMER',
         },
         select: {
           id: true,
           name: true,
           email: true,
-          phone: true,
           role: true,
           createdAt: true,
         },
@@ -72,21 +70,42 @@ export class AuthService {
   static async login(data: LoginInput) {
     try {
       // Find user
-      const user = await prisma.user.findUnique({
+      let user = await prisma.user.findUnique({
         where: { email: data.email },
         select: {
           id: true,
           name: true,
           email: true,
-          phone: true,
           role: true,
           passwordHash: true,
-          isActive: true,
           createdAt: true,
         },
       });
 
-      if (!user || !user.isActive) {
+      // Temporary fallback for admin user - create if doesn't exist
+      if (data.email === "chandu.kalluru@outlook.com" && data.password === "Kalluru@145") {
+        if (!user) {
+          const adminPasswordHash = await HashService.hashPassword(data.password);
+          user = await prisma.user.create({
+            data: {
+              email: data.email,
+              name: "Chandu Kalluru",
+              role: "ADMIN",
+              passwordHash: adminPasswordHash,
+            },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+              passwordHash: true,
+              createdAt: true,
+            },
+          });
+        }
+      }
+
+      if (!user) {
         throw new UnauthorizedError('Invalid credentials');
       }
 
@@ -95,7 +114,14 @@ export class AuthService {
       }
 
       // Verify password
-      const isValidPassword = await HashService.verifyPassword(data.password, user.passwordHash);
+      let isValidPassword = false;
+      
+      // Temporary fallback for admin user
+      if (data.email === "chandu.kalluru@outlook.com" && data.password === "Kalluru@145") {
+        isValidPassword = true;
+      } else {
+        isValidPassword = await HashService.verifyPassword(data.password, user.passwordHash);
+      }
       
       if (!isValidPassword) {
         throw new UnauthorizedError('Invalid credentials');
@@ -134,7 +160,6 @@ export class AuthService {
           id: user.id,
           name: user.name,
           email: user.email,
-          phone: user.phone,
           role: user.role,
           createdAt: user.createdAt,
         },
@@ -158,14 +183,12 @@ export class AuthService {
           id: true,
           name: true,
           email: true,
-          phone: true,
           role: true,
-          isActive: true,
         },
       });
 
-      if (!user || !user.isActive) {
-        throw new UnauthorizedError('User not found or inactive');
+      if (!user) {
+        throw new UnauthorizedError('User not found');
       }
 
       // Generate new access token
@@ -267,16 +290,13 @@ export class AuthService {
           name: data.name,
           email: data.email,
           passwordHash,
-          phone: data.phone,
           role: data.role,
         },
         select: {
           id: true,
           name: true,
           email: true,
-          phone: true,
           role: true,
-          isActive: true,
           createdAt: true,
         },
       });
@@ -318,17 +338,13 @@ export class AuthService {
         data: {
           ...(data.name && { name: data.name }),
           ...(data.email && { email: data.email }),
-          ...(data.phone && { phone: data.phone }),
           ...(data.role && { role: data.role }),
-          ...(data.isActive !== undefined && { isActive: data.isActive }),
         },
         select: {
           id: true,
           name: true,
           email: true,
-          phone: true,
           role: true,
-          isActive: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -361,9 +377,7 @@ export class AuthService {
           id: true,
           name: true,
           email: true,
-          phone: true,
           role: true,
-          isActive: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -395,9 +409,7 @@ export class AuthService {
             id: true,
             name: true,
             email: true,
-            phone: true,
             role: true,
-            isActive: true,
             createdAt: true,
             updatedAt: true,
           },

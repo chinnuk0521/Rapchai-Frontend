@@ -2,11 +2,13 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useAuth } from "../lib/auth";
 
-export default function NavBar(): JSX.Element {
+export default function NavBar() {
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const { isAuthenticated, isAdmin, logout } = useAuth();
 
   useEffect(() => {
     // Only apply scroll behavior on homepage
@@ -49,12 +51,28 @@ export default function NavBar(): JSX.Element {
         </Link>
             <nav className="flex items-center gap-6 text-sm">
               <Link href="/menu" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Menu</Link>
-              <Link href="/order" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Order Online</Link>
               <Link href="/events" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Events</Link>
               <Link href="/catering" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Private Dining</Link>
               <Link href="/gallery" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Gallery</Link>
               <Link href="/contact" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Contact</Link>
-              <Link href="/admin" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Admin</Link>
+              
+              {/* Admin Section */}
+              {isAuthenticated && isAdmin ? (
+                <>
+                  <Link href="/admin/dashboard" className="px-3 py-1 bg-[var(--rc-orange)] text-white rounded-lg font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors text-xs">
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={logout}
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg font-bold hover:bg-gray-200 transition-colors text-xs"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link href="/admin/login" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Admin Login</Link>
+              )}
+              
               <a href="https://wa.me/919000000000" target="_blank" rel="noopener noreferrer" className="rounded-full bg-[var(--rc-orange)] text-white px-4 py-2 text-xs font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors shadow-md">Order Now</a>
             </nav>
       </div>
