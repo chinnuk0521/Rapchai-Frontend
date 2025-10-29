@@ -13,8 +13,10 @@ async function adminRoutes(fastify: FastifyInstance) {
   }));
 
   // Events management
-  // Get all events
-  fastify.get('/events', asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
+  // Get all events (admin only)
+  fastify.get('/events', {
+    preHandler: [adminMiddleware],
+  }, asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
     const { page, limit } = request.query as any;
     const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 10;
@@ -22,8 +24,10 @@ async function adminRoutes(fastify: FastifyInstance) {
     return reply.send(result);
   }));
 
-  // Get event by ID
-  fastify.get('/events/:id', asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
+  // Get event by ID (admin only)
+  fastify.get('/events/:id', {
+    preHandler: [adminMiddleware],
+  }, asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as any;
     const result = await AdminService.getEventById(id);
     return reply.send({ event: result });
@@ -140,6 +144,24 @@ async function adminRoutes(fastify: FastifyInstance) {
   }, asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
     const result = await AdminService.createCategory(request.body as any);
     return reply.status(201).send({ category: result });
+  }));
+
+  // Update category (admin only)
+  fastify.put('/categories/:id', {
+    preHandler: [adminMiddleware],
+  }, asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any;
+    const result = await AdminService.updateCategory(id, request.body as any);
+    return reply.send({ category: result });
+  }));
+
+  // Delete category (admin only)
+  fastify.delete('/categories/:id', {
+    preHandler: [adminMiddleware],
+  }, asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as any;
+    await AdminService.deleteCategory(id);
+    return reply.send({ message: 'Category deleted successfully' });
   }));
 
   // Analytics

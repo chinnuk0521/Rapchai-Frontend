@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "rapchai.com" },
       { protocol: "https", hostname: "www.rapchai.com" },
       { protocol: "https", hostname: "scontent.cdninstagram.com" },
+      { protocol: "https", hostname: "ukdrlbhorhsaupkskfvy.supabase.co" },
     ],
     minimumCacheTTL: 31536000,
   },

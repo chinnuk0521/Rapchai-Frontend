@@ -1,5 +1,5 @@
 "use client";
-import { useAuth } from '../lib/auth';
+import { useAuth } from '../lib/auth-hydration-safe';
 import { useRouter } from 'next/navigation';
 import { useEffect, ReactNode } from 'react';
 

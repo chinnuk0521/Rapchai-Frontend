@@ -2,13 +2,17 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { useAuth } from "../lib/auth";
+import { useAuth } from "../lib/auth-hydration-safe";
+import { useCustomerAuth } from "../lib/customer-auth";
+import CustomerAuthModal from "./CustomerAuthModal";
 
 export default function NavBar() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === "/";
   const { isAuthenticated, isAdmin, logout } = useAuth();
+  const { customer, signOut: customerSignOut, isLoading: customerAuthLoading } = useCustomerAuth();
 
   useEffect(() => {
     // Only apply scroll behavior on homepage
@@ -56,6 +60,30 @@ export default function NavBar() {
               <Link href="/gallery" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Gallery</Link>
               <Link href="/contact" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Contact</Link>
               
+              {/* Customer Auth Section */}
+              {!customerAuthLoading && (
+                customer ? (
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-[var(--rc-espresso-brown)] font-semibold">
+                      {customer.email?.split('@')[0] || 'User'}
+                    </span>
+                    <button
+                      onClick={customerSignOut}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg font-bold hover:bg-gray-200 transition-colors text-xs"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="px-3 py-1 bg-[var(--rc-orange)] text-white rounded-lg font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors text-xs"
+                  >
+                    Sign In
+                  </button>
+                )
+              )}
+
               {/* Admin Section */}
               {isAuthenticated && isAdmin ? (
                 <>
@@ -70,12 +98,18 @@ export default function NavBar() {
                   </button>
                 </>
               ) : (
-                <Link href="/admin/login" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold">Admin Login</Link>
+                <Link href="/admin/login" className="text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-bold text-xs">Admin</Link>
               )}
               
               <a href="https://wa.me/919000000000" target="_blank" rel="noopener noreferrer" className="rounded-full bg-[var(--rc-orange)] text-white px-4 py-2 text-xs font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors shadow-md">Order Now</a>
             </nav>
       </div>
+
+      {/* Customer Auth Modal */}
+      <CustomerAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </header>
   );
 }

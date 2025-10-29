@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useApiError } from './api';
 import type { LoadingState } from './types';
+import { formatDateSSR, formatTimeSSR, formatPriceSSR } from './ssr-utils';
 
 // Generic hook for API calls with loading states
 export function useApiCall<T>(
@@ -53,17 +54,19 @@ export function useMenuData() {
       ]);
 
       // Transform API data to frontend format
-      const transformedItems = (itemsResponse.data || []).map((item: any) => ({
+      const transformedItems = (itemsResponse.items || []).map((item: any) => ({
         ...item,
         price: item.pricePaise / 100, // Convert paise to rupees
         veg: item.isVeg,
         available: item.isAvailable,
         title: item.name, // For backward compatibility
+        imageUrl: item.imageUrl, // Ensure imageUrl is passed through
       }));
 
-      const transformedCategories = (categoriesResponse.data || []).map((cat: any) => ({
+      const transformedCategories = (categoriesResponse.categories || []).map((cat: any) => ({
         ...cat,
         name: cat.name,
+        imageUrl: cat.imageUrl, // Ensure category imageUrl is passed through
       }));
 
       setMenuItems(transformedItems);
@@ -99,21 +102,13 @@ export function useEventsData() {
       const response = await eventApi.getEvents({ limit: 100 });
       
       // Transform API data to frontend format
-      const transformedEvents = (response.data || []).map((event: any) => ({
+      const transformedEvents = (response.events || []).map((event: any) => ({
         ...event,
         eventDate: event.startAt,
-        startTime: new Date(event.startAt).toLocaleTimeString('en-IN', { 
-          hour: '2-digit', 
-          minute: '2-digit',
-          hour12: false 
-        }),
-        endTime: event.endAt ? new Date(event.endAt).toLocaleTimeString('en-IN', { 
-          hour: '2-digit', 
-          minute: '2-digit',
-          hour12: false 
-        }) : null,
+        startTime: formatTimeSSR(event.startAt),
+        endTime: event.endAt ? formatTimeSSR(event.endAt) : null,
         eventType: event.eventType || 'Music',
-        price: event.pricePaise ? `₹${event.pricePaise / 100}` : 'Free Entry',
+        price: formatPriceSSR(event.pricePaise),
         status: event.isActive ? 'upcoming' : 'cancelled',
       }));
       
@@ -163,7 +158,7 @@ export function useOrderManagement() {
     try {
       const { orderApi } = await import('./services');
       const response = await orderApi.getOrders(params);
-      setOrders(response.data || []);
+      setOrders(response.orders || []);
       setLoading({ isLoading: false, error: null });
       return response;
     } catch (error) {

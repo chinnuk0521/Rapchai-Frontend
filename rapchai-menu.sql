@@ -2,7 +2,7 @@
 -- This script adds all Rapchai menu categories and items to Supabase
 
 -- Insert Categories
-INSERT INTO "Category" (id, name, slug, description, "createdAt", "updatedAt") VALUES
+INSERT INTO categories (id, name, slug, description, "createdAt", "updatedAt") VALUES
 ('cat_chais', 'Chais & Signature Coffees', 'chais-coffees', 'Traditional Assam chai and signature coffees brewed with our special filter', NOW(), NOW()),
 ('cat_burgers', 'Mini Burgers', 'mini-burgers', 'Perfect bite-sized sliders in veg and non-veg options', NOW(), NOW()),
 ('cat_sandwiches', 'Sandwiches', 'sandwiches', 'Delicious sandwiches on our 4-inch sub bread', NOW(), NOW()),
@@ -15,7 +15,7 @@ ON CONFLICT (slug) DO UPDATE SET
   "updatedAt" = NOW();
 
 -- Insert Menu Items
-INSERT INTO "MenuItem" (id, name, description, "pricePaise", "isVeg", "categoryId", "createdAt", "updatedAt") VALUES
+INSERT INTO menu_items (id, name, description, "pricePaise", "isVeg", "categoryId", "createdAt", "updatedAt") VALUES
 -- Chais & Signature Coffees
 ('item_1', 'Traditional Assam Chai', 'Brewed from Assam leaves using our traditional filter for perfect decoction', 8000, true, 'cat_chais', NOW(), NOW()),
 ('item_2', 'Masala Chai', 'Spiced chai with aromatic spices', 9000, true, 'cat_chais', NOW(), NOW()),

@@ -63,23 +63,46 @@ export class JWTService {
   }
 
   static async revokeRefreshToken(tokenId: string): Promise<void> {
-    // For now, we'll just validate the token without storing revocation
-    // In production, you might want to use Redis to store revoked tokens
-    return;
+    try {
+      // Store revoked token in database
+      await prisma.refreshToken.updateMany({
+        where: { token: tokenId },
+        data: { isRevoked: true },
+      });
+    } catch (error) {
+      // Token might not exist in DB, which is fine
+      console.log('Token revocation:', error);
+    }
   }
 
   static async validateRefreshToken(token: string): Promise<{ userId: string; tokenId: string }> {
     const payload = this.verifyRefreshToken(token);
     
-    // For now, we'll just return the payload without database validation
-    // In production, you might want to check against a revoked tokens list
+    // Check if token is revoked
+    const revokedToken = await prisma.refreshToken.findFirst({
+      where: { 
+        token: payload.tokenId,
+        isRevoked: true 
+      },
+    });
+
+    if (revokedToken) {
+      throw new Error('Token has been revoked');
+    }
+
     return { userId: payload.userId, tokenId: payload.tokenId };
   }
 
   static async revokeAllUserTokens(userId: string): Promise<void> {
-    // For now, we'll just return without doing anything
-    // In production, you might want to store revoked tokens in Redis
-    return;
+    try {
+      // Revoke all refresh tokens for the user
+      await prisma.refreshToken.updateMany({
+        where: { userId },
+        data: { isRevoked: true },
+      });
+    } catch (error) {
+      console.log('Revoke all tokens error:', error);
+    }
   }
 
   static decodeToken(token: string): any {

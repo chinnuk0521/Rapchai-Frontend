@@ -272,7 +272,7 @@ ${
                       >
                         <div className="w-16 h-16 rounded-lg overflow-hidden">
                           <Image
-                            src={IMG.burger}
+                            src={item.imageUrl || IMG.burger} // Use uploaded image or fallback
                             alt={item.name}
                             width={64}
                             height={64}

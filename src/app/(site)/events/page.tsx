@@ -1,22 +1,37 @@
 "use client";
+import { useState } from "react";
 import RobustImage from "../../components/RobustImage";
+import EventBookingModal from "../../components/EventBookingModal";
 import { IMG } from "../../lib/images";
 import { useEventsData } from "../../lib/hooks";
-import type { Event } from "../../lib/types";
+import { formatDateSSR, formatTimeRangeSSR } from "../../lib/ssr-utils";
+import type { Event, Booking } from "../../lib/types";
 
 export default function EventsPage() {
   const { events, loading, refetch } = useEventsData();
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Use API data only - no fallback to static data
   const displayEvents = events;
 
+  const handleBookNow = (event: Event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
+
+  const handleBookingSuccess = (booking: Booking) => {
+    // Optionally refresh events to show updated booking counts
+    refetch();
+  };
+
   const formatEventDate = (eventDate: string) => {
-    const date = new Date(eventDate);
-    return date.toLocaleDateString('en-IN', { 
-      weekday: 'long', 
-      month: 'short', 
-      day: 'numeric' 
-    });
+    return formatDateSSR(eventDate);
   };
 
   const formatEventTime = (startTime: string, endTime: string) => {
@@ -139,7 +154,10 @@ export default function EventsPage() {
                       {event.price || 'Free Entry'}
                     </div>
                   </div>
-                  <button className="w-full py-2 px-4 bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white font-bold rounded-lg hover:from-[var(--rc-espresso-brown)] hover:to-[var(--rc-orange)] transition-all">
+                  <button 
+                    onClick={() => handleBookNow(event)}
+                    className="w-full py-2 px-4 bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white font-bold rounded-lg hover:from-[var(--rc-espresso-brown)] hover:to-[var(--rc-orange)] transition-all"
+                  >
                     Book Now
                   </button>
                 </div>
@@ -207,6 +225,14 @@ export default function EventsPage() {
           </div>
         )}
       </div>
+
+      {/* Event Booking Modal */}
+      <EventBookingModal
+        event={selectedEvent}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onBookingSuccess={handleBookingSuccess}
+      />
     </div>
   );
 }

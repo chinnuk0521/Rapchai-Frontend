@@ -95,17 +95,13 @@ export interface Booking {
   id: string;
   eventId?: string;
   event?: Event;
-  customerName: string;
-  customerPhone: string;
-  customerEmail?: string;
-  bookingDate: string;
-  startTime: string;
-  endTime: string;
-  guestCount: number;
-  packageType?: 'Starter Pack' | 'Signature' | 'Premium';
-  specialRequests?: string;
-  totalAmount?: number;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  name: string; // Maps to 'name' from backend
+  phone: string; // Maps to 'phone' from backend
+  email?: string; // Maps to 'email' from backend
+  partySize: number; // Maps to 'partySize' from backend
+  date: string; // Maps to 'date' from backend (ISO date string)
+  notes?: string; // Maps to 'notes' from backend
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
   createdAt: string;
   updatedAt: string;
 }

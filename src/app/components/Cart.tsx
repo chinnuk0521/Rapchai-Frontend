@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { IMG } from "../lib/images";
 
-type MenuItem = { id: number; title: string; veg: boolean; price: number; category: string };
+type MenuItem = { id: number; title: string; veg: boolean; price: number; category: string; imageUrl?: string };
 type CartItem = MenuItem & { quantity: number };
 
 interface CartProps {
@@ -177,7 +177,7 @@ Please complete payment and then proceed with WhatsApp order.`);
                     <div key={item.id} className="flex items-center gap-4 p-4 bg-[var(--rc-creamy-beige)] rounded-xl">
                       <div className="w-16 h-16 rounded-lg overflow-hidden">
                         <Image
-                          src={IMG.burger} // You can map this based on item category
+                          src={item.imageUrl || IMG.burger} // Use uploaded image or fallback
                           alt={item.title}
                           width={64}
                           height={64}

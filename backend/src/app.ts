@@ -16,6 +16,7 @@ import authRoutes from '@/routes/auth.routes.js';
 import menuRoutes from '@/routes/menu.routes.js';
 import orderRoutes from '@/routes/order.routes';
 import adminRoutes from '@/routes/admin.routes.js';
+import eventsRoutes from '@/routes/events.routes.js';
 import healthRoutes from '@/routes/health.routes.js';
 import testRoutes from '@/routes/test.routes.js';
 
@@ -133,6 +134,7 @@ export async function createApp(options: FastifyServerOptions = {}): Promise<Fas
   await app.register(authRoutes, { prefix: '/api/auth' });
   await app.register(menuRoutes, { prefix: '/api/menu' });
   await app.register(orderRoutes, { prefix: '/api/orders' });
+  await app.register(eventsRoutes, { prefix: '/api' });
   await app.register(adminRoutes, { prefix: '/api/admin' });
 
   // Root route
