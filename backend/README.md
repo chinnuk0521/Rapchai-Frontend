@@ -1,264 +1,395 @@
-# Rapchai Backend API
+# Rapchai Café - Backend API
 
-A production-ready backend API for Rapchai Café built with Fastify, TypeScript, Prisma, and Redis.
+Fastify-based REST API for Rapchai Café restaurant management system with PostgreSQL database and Prisma ORM.
 
-## Features
+## 🚀 Features
 
-- **Authentication & Authorization**: JWT-based auth with role-based access control
-- **Menu Management**: Full CRUD operations for categories and menu items
-- **Order Management**: Complete order lifecycle with status tracking
-- **Admin Dashboard**: Analytics, event management, and system settings
-- **Caching**: Redis-based caching for improved performance
-- **Rate Limiting**: Built-in rate limiting for API protection
-- **File Uploads**: Support for image uploads with MinIO/S3
-- **Health Checks**: Comprehensive health monitoring endpoints
-- **API Documentation**: Auto-generated Swagger documentation
+- **RESTful API** - Fastify framework with TypeScript
+- **PostgreSQL Database** - Prisma ORM for database management
+- **JWT Authentication** - Secure token-based authentication for admin
+- **Comprehensive Routes** - Menu, Orders, Events, Bookings, Admin operations
+- **Image Storage** - Integration with Supabase Storage
+- **Swagger Documentation** - Auto-generated API docs at `/docs`
+- **Error Handling** - Centralized error handling middleware
+- **Input Validation** - Zod schema validation
 
-## Tech Stack
+## 📋 Prerequisites
 
-- **Runtime**: Node.js 20+
-- **Framework**: Fastify 5.x
-- **Language**: TypeScript
-- **Database**: SQLite (with Prisma ORM)
-- **Cache**: Redis
-- **Authentication**: JWT with Argon2 password hashing
-- **Documentation**: Swagger/OpenAPI
-- **Testing**: Jest
-- **Linting**: ESLint + Prettier
+- Node.js 18+
+- PostgreSQL database or Supabase
+- npm or yarn
+- Supabase account (optional, for image storage)
 
-## API Endpoints
+## 🛠️ Installation
 
-### Authentication (`/api/auth`)
-- `POST /register` - Register new user
-- `POST /login` - User login
-- `POST /refresh` - Refresh access token
-- `POST /logout` - User logout
-- `POST /change-password` - Change password
-- `GET /me` - Get current user profile
-- `POST /admin/users` - Create user (admin only)
-- `GET /admin/users` - Get all users (admin only)
-- `GET /admin/users/:id` - Get user by ID (admin only)
-- `PUT /admin/users/:id` - Update user (admin only)
+1. **Clone the repository:**
+```bash
+git clone <repository-url>
+cd rapchai/backend
+```
 
-### Menu (`/api/menu`)
-- `GET /categories` - Get all categories
-- `GET /categories/:id` - Get category by ID
-- `POST /categories` - Create category (admin only)
-- `PUT /categories/:id` - Update category (admin only)
-- `DELETE /categories/:id` - Delete category (admin only)
-- `GET /items` - Get all menu items
-- `GET /items/:id` - Get menu item by ID
-- `POST /items` - Create menu item (admin only)
-- `PUT /items/:id` - Update menu item (admin only)
-- `DELETE /items/:id` - Delete menu item (admin only)
-- `PATCH /items/:id/toggle-availability` - Toggle item availability (admin only)
-- `GET /categories/:id/items` - Get items by category
-- `GET /search` - Search menu items
+2. **Install dependencies:**
+```bash
+npm install
+```
 
-### Orders (`/api/orders`)
-- `POST /` - Create new order
-- `GET /` - Get all orders (admin only)
-- `GET /:id` - Get order by ID
-- `GET /customer/:phone` - Get orders by customer phone
-- `PATCH /:id/status` - Update order status (admin only)
-- `PATCH /:id/payment-status` - Update payment status (admin only)
-- `PATCH /:id/cancel` - Cancel order
-- `GET /analytics/summary` - Get order analytics (admin only)
-- `GET /status/:status` - Get orders by status (admin only)
-- `GET /today` - Get today's orders (admin only)
+3. **Set up environment variables:**
+```bash
+cp env.example .env
+```
 
-### Admin (`/api/admin`)
-- `GET /dashboard` - Get dashboard analytics (admin only)
-- `GET /events` - Get all events (admin only)
-- `GET /events/:id` - Get event by ID (admin only)
-- `POST /events` - Create event (admin only)
-- `PUT /events/:id` - Update event (admin only)
-- `DELETE /events/:id` - Delete event (admin only)
-- `GET /bookings` - Get all bookings (admin only)
-- `GET /bookings/:id` - Get booking by ID (admin only)
-- `PATCH /bookings/:id/status` - Update booking status (admin only)
-- `GET /media` - Get all media (admin only)
-- `POST /media/upload` - Upload media (admin only)
-- `DELETE /media/:id` - Delete media (admin only)
-- `GET /settings` - Get system settings (admin only)
-- `PUT /settings` - Update system settings (admin only)
-- `GET /reports/sales` - Get sales report (admin only)
-- `GET /reports/customers` - Get customer analytics (admin only)
+4. **Configure `.env` file:**
+```env
+NODE_ENV=development
+PORT=3001
+HOST=0.0.0.0
+DATABASE_URL="postgresql://username:password@localhost:5432/rapchai_db?schema=public"
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=your-super-secret-jwt-key-at-least-32-characters-long
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-at-least-32-characters-long
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+```
 
-### Health (`/api/health`)
-- `GET /` - Basic health check
-- `GET /detailed` - Detailed health check with service status
-- `GET /ready` - Readiness check for Kubernetes
-- `GET /live` - Liveness check for Kubernetes
-- `GET /metrics` - Prometheus metrics endpoint
+5. **Set up the database:**
+```bash
+# Generate Prisma client
+npm run prisma:generate
 
-## Setup Instructions
+# Run migrations
+npm run prisma:migrate
 
-### Prerequisites
+# Seed database
+npm run prisma:seed
+```
 
-- Node.js 20+ 
-- npm 10+
-- Redis server
-- SQLite (included with Node.js)
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/chinnuk0521/Rapchai.git
-   cd Rapchai/backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp env.example .env
-   ```
-   
-   Edit `.env` file with your configuration:
-   ```env
-   NODE_ENV=development
-   PORT=3001
-   HOST=0.0.0.0
-   DATABASE_URL="file:./dev.db"
-   REDIS_URL=redis://localhost:6379
-   JWT_SECRET=your-super-secret-jwt-key-at-least-32-characters-long
-   JWT_REFRESH_SECRET=your-super-secret-refresh-key-at-least-32-characters-long
-   ```
-
-4. **Set up the database**
-   ```bash
-   npm run prisma:generate
-   npm run prisma:migrate
-   npm run prisma:seed
-   ```
-
-5. **Start Redis server**
-   ```bash
-   redis-server
-   ```
-
-6. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+6. **Start the development server:**
+```bash
+npm run dev
+```
 
 The API will be available at `http://localhost:3001`
-API documentation will be available at `http://localhost:3001/docs`
+API documentation at `http://localhost:3001/docs`
 
-## Scripts
+## 🗄️ Database Schema
+
+### Main Models
+
+- **User** - Admin and customer accounts
+- **Category** - Menu categories
+- **MenuItem** - Individual menu items with pricing
+- **Order** - Customer orders
+- **OrderItem** - Items within orders
+- **Event** - Restaurant events
+- **Booking** - Event reservations
+- **Media** - Image/media storage references
+
+### Database Commands
+
+```bash
+# Generate Prisma client
+npm run prisma:generate
+
+# Create migration
+npx prisma migrate dev --name migration_name
+
+# Apply migrations
+npm run prisma:migrate
+
+# Seed database
+npm run prisma:seed
+
+# Open Prisma Studio (database GUI)
+npm run prisma:studio
+
+# Deploy migrations (production)
+npm run prisma:migrate:deploy
+```
+
+## 📡 API Endpoints
+
+### Public Endpoints
+
+#### Menu
+- `GET /api/menu/categories` - Get all categories
+- `GET /api/menu/categories/:id` - Get category by ID
+- `GET /api/menu/items` - Get all menu items
+- `GET /api/menu/items/:id` - Get menu item by ID
+
+#### Orders
+- `POST /api/orders` - Create new order
+- `GET /api/orders/:id` - Get order by ID
+- `PATCH /api/orders/:id/cancel` - Cancel order
+- `GET /api/orders/customer/:phone` - Get orders by customer phone
+
+#### Events
+- `GET /api/events` - Get all active events
+- `GET /api/events/:id` - Get event by ID
+
+### Protected Endpoints (Admin)
+
+#### Authentication
+- `POST /api/auth/login` - Admin login
+- `POST /api/auth/logout` - Admin logout
+- `POST /api/auth/refresh` - Refresh access token
+
+#### Admin Dashboard
+- `GET /api/admin/dashboard` - Get dashboard analytics
+- `GET /api/admin/events` - Get all events (admin)
+- `GET /api/admin/events/:id` - Get event by ID (admin)
+- `POST /api/admin/events` - Create event
+- `PUT /api/admin/events/:id` - Update event
+- `DELETE /api/admin/events/:id` - Delete event
+
+#### Menu Management
+- `POST /api/menu/categories` - Create category
+- `PUT /api/menu/categories/:id` - Update category
+- `DELETE /api/menu/categories/:id` - Delete category
+- `POST /api/menu/items` - Create menu item
+- `PUT /api/menu/items/:id` - Update menu item
+- `DELETE /api/menu/items/:id` - Delete menu item
+
+#### Order Management
+- `GET /api/orders` - Get all orders (admin)
+- `PATCH /api/orders/:id/status` - Update order status
+- `PATCH /api/orders/:id/payment` - Update payment status
+
+#### Bookings
+- `GET /api/admin/bookings` - Get all bookings
+- `POST /api/admin/bookings` - Create booking
+
+## 🔐 Authentication System
+
+### Overview
+The Rapchai application implements a robust token-based authentication system with proper role-based access control.
+
+### Admin Authentication Flow
+
+1. **Admin Login Process**
+   - Admin clicks "Admin Login" → Frontend calls `/api/auth/login`
+   - Backend validates credentials → Returns JWT access token + refresh token
+   - Frontend stores tokens → Admin APIs become accessible
+   - All admin routes require valid JWT token → Token verified on each request
+
+2. **Admin Logout Process**
+   - Admin clicks "Logout" → Frontend calls `/api/auth/logout`
+   - Backend invalidates all user tokens → Tokens marked as revoked in database
+   - Frontend clears stored tokens → Admin APIs immediately become inaccessible
+
+### Token Management
+- **Access Tokens**: Short-lived (15 minutes), used for API requests
+- **Refresh Tokens**: Long-lived (7 days), used to get new access tokens
+- **Token Revocation**: Tokens marked as revoked in database on logout
+- **Token Validation**: Every admin request validates token + checks revocation status
+
+### Usage Examples
+
+#### Login
+```javascript
+const loginResponse = await fetch('/api/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email: 'admin@example.com', password: 'password' })
+});
+const { accessToken, refreshToken } = await loginResponse.json();
+```
+
+#### Authenticated Request
+```javascript
+const eventsResponse = await fetch('/api/admin/events', {
+  headers: { 'Authorization': `Bearer ${accessToken}` }
+});
+```
+
+#### Logout
+```javascript
+await fetch('/api/auth/logout', {
+  method: 'POST',
+  headers: { 'Authorization': `Bearer ${accessToken}` }
+});
+```
+
+### Security Features
+1. **Token-Based Authentication**: JWT tokens with proper expiration
+2. **Role-Based Access Control**: Admin vs Customer role separation
+3. **Token Revocation**: Immediate invalidation on logout
+4. **User Status Checking**: Inactive users cannot authenticate
+5. **Secure Token Storage**: Tokens stored in database with revocation tracking
+
+## 🗄️ Database Setup
+
+### Option 1: Supabase (Recommended)
+
+1. **Create Supabase Project**
+   - Go to [https://supabase.com](https://supabase.com)
+   - Create new project: `rapchai-restaurant`
+   - Save database password
+
+2. **Get Connection String**
+   - Go to **Settings** → **Database**
+   - Copy connection string (format: `postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres`)
+
+3. **Update `.env`:**
+```env
+DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres"
+```
+
+4. **Run Migrations:**
+```bash
+npm run prisma:migrate
+```
+
+5. **Seed Database:**
+```bash
+npm run prisma:seed
+```
+
+### Option 2: Local PostgreSQL
+
+1. **Install PostgreSQL**
+   - **Windows**: Download from [postgresql.org](https://www.postgresql.org/download/windows/)
+   - **macOS**: `brew install postgresql && brew services start postgresql`
+   - **Ubuntu/Debian**: `sudo apt-get install postgresql postgresql-contrib`
+
+2. **Create Database**
+```sql
+psql -U postgres
+CREATE DATABASE rapchai_db;
+CREATE USER rapchai_user WITH PASSWORD 'rapchai_password';
+GRANT ALL PRIVILEGES ON DATABASE rapchai_db TO rapchai_user;
+\q
+```
+
+3. **Update `.env`:**
+```env
+DATABASE_URL="postgresql://rapchai_user:rapchai_password@localhost:5432/rapchai_db?schema=public"
+```
+
+4. **Run Migrations:**
+```bash
+npm run prisma:migrate
+npm run prisma:seed
+```
+
+### Database Schema
+The database includes:
+- **Users** - Admin and customer accounts
+- **Categories** - Menu categories (Chai/Coffee, Burgers, etc.)
+- **MenuItems** - All menu items with prices, descriptions, images
+- **Orders** - Customer orders with items and status
+- **Events** - Rapchai events and workshops
+- **Bookings** - Event bookings and reservations
+
+## 📁 Project Structure
+
+```
+backend/
+├── src/
+│   ├── app.ts              # Fastify app configuration
+│   ├── server.ts           # Server entry point
+│   ├── config/             # Configuration files
+│   ├── middleware/         # Custom middleware
+│   │   ├── auth.middleware.ts
+│   │   └── error.middleware.ts
+│   ├── routes/             # API routes
+│   │   ├── admin.routes.ts
+│   │   ├── auth.routes.ts
+│   │   ├── events.routes.ts
+│   │   ├── menu.routes.ts
+│   │   └── order.routes.ts
+│   ├── services/            # Business logic
+│   │   ├── admin.service.ts
+│   │   ├── auth.service.ts
+│   │   ├── menu.service.ts
+│   │   └── order.service.ts
+│   ├── schemas/            # Zod validation schemas
+│   └── utils/              # Utility functions
+│       ├── jwt.ts
+│       └── hash.ts
+├── prisma/
+│   ├── schema.prisma       # Database schema
+│   ├── migrations/         # Database migrations
+│   └── seed.ts            # Seed script
+└── tests/                  # Test files
+```
+
+## 🧪 Development
+
+### Available Scripts
 
 - `npm run dev` - Start development server with hot reload
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run test` - Run tests
 - `npm run test:watch` - Run tests in watch mode
-- `npm run test:coverage` - Run tests with coverage
-- `npm run test:e2e` - Run end-to-end tests
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint errors
-- `npm run format` - Format code with Prettier
+- `npm run type-check` - Run TypeScript type checking
 - `npm run prisma:generate` - Generate Prisma client
 - `npm run prisma:migrate` - Run database migrations
-- `npm run prisma:migrate:deploy` - Deploy migrations to production
-- `npm run prisma:seed` - Seed database with sample data
+- `npm run prisma:seed` - Seed database
 - `npm run prisma:studio` - Open Prisma Studio
-- `npm run type-check` - Run TypeScript type checking
 
-## Database Schema
+## 🔧 Configuration
 
-The application uses Prisma ORM with SQLite database. Key models include:
+### Environment Variables
 
-- **User**: User accounts with authentication
-- **Category**: Menu categories
-- **MenuItem**: Individual menu items
-- **Order**: Customer orders
-- **OrderItem**: Items within orders
-- **Event**: Restaurant events
-- **Booking**: Event bookings
-- **Media**: File uploads
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `NODE_ENV` | Environment (development/production) | ❌ | `development` |
+| `PORT` | Server port | ❌ | `3001` |
+| `HOST` | Server host | ❌ | `0.0.0.0` |
+| `DATABASE_URL` | PostgreSQL connection string | ✅ | - |
+| `REDIS_URL` | Redis connection string | ❌ | - |
+| `JWT_SECRET` | JWT signing secret (min 32 chars) | ✅ | - |
+| `JWT_REFRESH_SECRET` | JWT refresh secret (min 32 chars) | ✅ | - |
+| `SUPABASE_URL` | Supabase project URL | ❌ | - |
+| `SUPABASE_ANON_KEY` | Supabase anonymous key | ❌ | - |
 
-## Authentication
+## 🚀 Deployment
 
-The API uses JWT-based authentication with:
+### Production Build
+```bash
+npm run build
+npm start
+```
 
-- **Access Tokens**: Short-lived (15 minutes) for API access
-- **Refresh Tokens**: Long-lived (7 days) for token renewal
-- **Password Hashing**: Argon2id for secure password storage
-- **Role-based Access**: ADMIN and CUSTOMER roles
+### Environment Setup
+1. Set all required environment variables
+2. Run database migrations: `npm run prisma:migrate:deploy`
+3. Seed database if needed: `npm run prisma:seed`
 
-## Caching
+### Docker Deployment
+```bash
+docker-compose -f docker/docker-compose.local.yml up -d
+```
 
-Redis is used for:
+## 📊 API Documentation
 
-- User session caching
-- Menu item caching
-- Order status caching
-- API response caching
+Swagger documentation is available at:
+- Development: `http://localhost:3001/docs`
+- Interactive API testing interface
 
-## Rate Limiting
+## 🧪 Testing
 
-Built-in rate limiting protects against abuse:
+```bash
+# Run all tests
+npm test
 
-- Default: 100 requests per minute per IP
-- Configurable via environment variables
-- Different limits for different endpoints
+# Run with coverage
+npm run test:coverage
 
-## Error Handling
+# Run end-to-end tests
+npm run test:e2e
+```
 
-Comprehensive error handling with:
+## 🔗 Related Documentation
 
-- Custom error classes
-- Structured error responses
-- Request validation with Zod
-- Database error mapping
-- JWT error handling
+- **Frontend Application**: See root `README.md`
+- **Database Schema**: See `prisma/schema.prisma`
+- **Database Setup SQL**: See root `database-setup.sql`
+- **API Routes**: See `src/routes/`
 
-## Monitoring
+## 📄 License
 
-Health check endpoints for monitoring:
-
-- Basic health check
-- Detailed service status
-- Kubernetes readiness/liveness probes
-- Prometheus metrics
-
-## Security Features
-
-- Helmet.js for security headers
-- CORS configuration
-- Rate limiting
-- Input validation
-- SQL injection protection (Prisma)
-- XSS protection
-- CSRF protection
-
-## Production Deployment
-
-For production deployment:
-
-1. Set `NODE_ENV=production`
-2. Use a production database (PostgreSQL recommended)
-3. Configure proper JWT secrets
-4. Set up Redis cluster
-5. Configure file storage (MinIO/S3)
-6. Set up monitoring and logging
-7. Use a reverse proxy (nginx)
-8. Enable HTTPS
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Run linting and tests
-6. Submit a pull request
-
-## License
-
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
+MIT

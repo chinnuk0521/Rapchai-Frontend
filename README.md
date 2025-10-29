@@ -1,186 +1,284 @@
-# Rapchai Cafe - Restaurant Management System
+# Rapchai Café - Frontend Application
 
-A complete restaurant management system with separate customer and admin applications, built with Next.js, TypeScript, and a Fastify backend.
+A modern Next.js 16 frontend application for Rapchai Café, featuring customer ordering, event booking, and admin dashboard management.
 
-## 🏗️ Architecture
+## 🚀 Features
 
-This project consists of three main components:
+### Customer Features
+- **Google OAuth Authentication** - Seamless sign-in with Google
+- **Menu Browsing** - Browse menu items with category filtering (Veg/Non-Veg)
+- **Global Shopping Cart** - Persistent cart across all pages with localStorage
+- **UPI Payment** - Multi-app UPI payment integration (PhonePe, GPay, Paytm, etc.)
+- **Event Booking** - Book events with mobile-based UPI payment reference
+- **Responsive Design** - Mobile-first design with smooth animations
 
-1. **Customer App** (`/`) - Customer-facing website for browsing menu, placing orders, and viewing events
-2. **Admin App** (`/admin`) - Staff dashboard for managing orders, menu, and analytics  
-3. **Backend API** (`/backend`) - Fastify-based REST API with PostgreSQL database
+### Admin Features
+- **Dashboard** - View orders, manage menu items and categories
+- **Menu Management** - CRUD operations for categories and menu items
+- **Image Upload** - Upload images for categories and items (Supabase Storage)
+- **Order Management** - View and manage customer orders
+- **Analytics** - Dashboard analytics and statistics
 
-## 🚀 Quick Start
+## 📋 Prerequisites
 
-### Prerequisites
-
-- Node.js 18+
-- PostgreSQL database
+- Node.js 18+ 
 - npm or yarn
+- Supabase account (for authentication and storage)
+- Backend API running (see `backend/README.md`)
 
-### Installation
+## 🛠️ Installation
 
-1. **Clone and install dependencies:**
+1. **Clone the repository:**
 ```bash
 git clone <repository-url>
 cd rapchai
+```
+
+2. **Install dependencies:**
+```bash
 npm install
-cd admin && npm install
-cd ../backend && npm install
 ```
 
-2. **Set up the database:**
+3. **Set up environment variables:**
 ```bash
-# Copy environment file
-cp backend/env.example backend/.env
-
-# Update DATABASE_URL in backend/.env with your PostgreSQL connection string
-# Example: DATABASE_URL="postgresql://username:password@localhost:5432/rapchai_db?schema=public"
-
-# Run migrations and seed data
-cd backend
-npx prisma migrate dev
-npx prisma db seed
+cp src/env.example .env.local
 ```
 
-3. **Start all services:**
+4. **Configure `.env.local`:**
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+## 🏃 Running the Application
+
+### Development Mode
 ```bash
-# From the root directory
-npm run dev:all
+npm run dev
 ```
 
-This will start:
-- Customer app on `http://localhost:3000`
-- Admin app on `http://localhost:3002` 
-- Backend API on `http://localhost:3001`
+The application will be available at `http://localhost:3000`
 
-## 📱 Applications
+### Production Build
+```bash
+npm run build
+npm start
+```
 
-### Customer App (Port 3000)
-- **Menu browsing** with categories and filters
-- **Order placement** with cart functionality
-- **Event listings** and booking
-- **Responsive design** for mobile and desktop
+## 📁 Project Structure
 
-### Admin App (Port 3002)
-- **Order management** - view and update order statuses
-- **Menu management** - add/edit/delete items and categories
-- **Bulk upload** - CSV import for menu items
-- **Image management** - upload and manage item images
-- **Analytics** - daily sales and reports
+```
+src/app/
+├── (site)/              # Customer routes
+│   ├── home/           # Customer homepage
+│   ├── menu/           # Menu browsing
+│   ├── events/         # Event listings
+│   ├── catering/       # Private dining
+│   ├── gallery/        # Gallery
+│   ├── contact/       # Contact page
+│   ├── order/          # QR ordering page
+│   ├── onboarding/     # Role selection
+│   └── admin/         # Admin routes
+│       ├── login/     # Admin login
+│       └── dashboard/ # Admin dashboard
+├── components/          # React components
+│   ├── CustomerNavBar.tsx
+│   ├── AdminNavBar.tsx
+│   ├── UnifiedCart.tsx
+│   ├── UPIPaymentModal.tsx
+│   └── ...
+├── lib/                # Utilities and contexts
+│   ├── cart-context.tsx
+│   ├── customer-auth.tsx
+│   ├── auth-hydration-safe.tsx
+│   ├── hooks.ts
+│   └── services.ts
+└── api/                # Next.js API routes
+    └── upload/        # Image upload handling
+```
 
-**Admin Credentials:**
-- Username: `admin`
-- Password: `rapchai123`
+## 🔑 Key Technologies
 
-### Backend API (Port 3001)
-- **RESTful API** with Fastify framework
-- **PostgreSQL** database with Prisma ORM
-- **JWT authentication** for secure endpoints
-- **Comprehensive error handling** and validation
+- **Next.js 16** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Supabase** - Authentication and storage
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Context** - State management for cart and auth
 
-## 🛠️ Available Scripts
+## 📱 Routes
 
-### Root Level
-- `npm run dev` - Start customer app only
-- `npm run dev:admin` - Start admin app only  
-- `npm run dev:all` - Start both apps concurrently
-- `npm run build` - Build customer app
-- `npm run build:admin` - Build admin app
-- `npm run build:all` - Build both apps
+### Customer Routes
+- `/` - Landing page
+- `/onboarding` - Role selection (Customer/Admin)
+- `/home` - Customer homepage
+- `/menu` - Menu browsing with category filtering
+- `/events` - Event listings and booking
+- `/catering` - Private dining
+- `/gallery` - Gallery
+- `/contact` - Contact page
+- `/order` - QR-based ordering
 
-### Backend
-- `npm run dev` - Start API server
+### Admin Routes
+- `/admin/login` - Admin login
+- `/admin/dashboard` - Admin dashboard
+
+## 💳 Payment Integration
+
+The application supports UPI payment through multiple apps:
+- PhonePe
+- Google Pay
+- Paytm
+- BHIM UPI
+- Amazon Pay
+- CRED
+- WhatsApp Pay
+
+**UPI ID:** `8179299096@superyes`
+
+## 🎨 Styling
+
+The application uses CSS variables for theming:
+- `--rc-orange` - Primary orange color
+- `--rc-espresso-brown` - Brown color
+- `--rc-creamy-beige` - Background color
+- `--rc-text-secondary` - Secondary text color
+
+## 🔒 Authentication
+
+### Customer Authentication
+- Google OAuth via Supabase
+- Session management with automatic refresh
+- Protected routes with automatic redirect
+
+### Admin Authentication
+- Email/password authentication
+- JWT token-based auth
+- Route protection via layout
+
+## 📦 State Management
+
+### Global Cart Context
+- Persists cart across navigation
+- localStorage synchronization
+- Event-driven add to cart
+
+### Authentication Contexts
+- Customer auth context (Supabase)
+- Admin auth context (JWT)
+
+## 🧪 Development
+
+### Available Scripts
+- `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
-- `npx prisma migrate dev` - Run database migrations
-- `npx prisma db seed` - Seed database with sample data
-
-## 🗄️ Database Schema
-
-The system uses PostgreSQL with the following main entities:
-
-- **Users** - Customer and admin accounts
-- **Categories** - Menu item categories
-- **MenuItems** - Individual menu items with pricing
-- **Orders** - Customer orders with items
-- **Events** - Restaurant events and bookings
-- **Bookings** - Event reservations
-
-## 🔧 Configuration
-
-### Environment Variables
-
-**Backend** (`backend/.env`):
-```env
-DATABASE_URL="postgresql://username:password@localhost:5432/rapchai_db?schema=public"
-JWT_SECRET="your-jwt-secret"
-JWT_REFRESH_SECRET="your-refresh-secret"
-ADMIN_PASSWORD="admin123"
-```
-
-**Frontend** (both apps):
-```env
-NEXT_PUBLIC_API_URL="http://localhost:3001/api"
-```
+- `npm run lint` - Run ESLint
 
 ## 🚀 Deployment
 
-### Customer App
-1. Build: `npm run build`
-2. Deploy to Vercel, Netlify, or your preferred platform
+### Vercel (Recommended)
+1. Connect your GitHub repository
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on push
 
-### Admin App  
-1. Build: `npm run build:admin`
-2. Deploy separately for enhanced security
+### Other Platforms
+- Build: `npm run build`
+- Output: `.next` directory
+- Environment variables required: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-### Backend API
-1. Build: `npm run build`
-2. Deploy to Railway, Heroku, or your preferred platform
-3. Set up PostgreSQL database
-4. Run migrations: `npx prisma migrate deploy`
+## 📝 Environment Variables
 
-## 🎨 Features
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_API_URL` | Backend API URL | ✅ |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | ✅ |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | ✅ |
 
-### Customer Features
-- ✅ Responsive menu browsing
-- ✅ Shopping cart functionality
-- ✅ Order placement with multiple payment options
-- ✅ Event listings and booking
-- ✅ Real-time order tracking
-- ✅ Mobile-optimized interface
+---
 
-### Admin Features
-- ✅ Order management dashboard
-- ✅ Menu item CRUD operations
-- ✅ Category management
-- ✅ Bulk CSV upload
-- ✅ Image upload and management
-- ✅ Sales analytics and reports
-- ✅ User management
+## 🔧 Supabase Setup
 
-### Technical Features
-- ✅ TypeScript for type safety
-- ✅ Tailwind CSS for styling
-- ✅ Prisma ORM for database operations
-- ✅ JWT authentication
-- ✅ RESTful API design
-- ✅ Error handling and validation
-- ✅ Responsive design
-- ✅ SEO optimization
+### Step 1: Create Supabase Project
 
-## 🤝 Contributing
+1. Go to [https://supabase.com](https://supabase.com)
+2. Sign up/Login with your GitHub account
+3. Click "New Project"
+4. Enter project details:
+   - **Name**: `rapchai-restaurant`
+   - **Database Password**: Generate a strong password (save this!)
+   - **Region**: Choose closest to your location
+5. Click "Create new project"
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+### Step 2: Get Supabase Credentials
+
+Once your project is created:
+
+1. Go to **Settings** → **API**
+2. Copy **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
+3. Copy **anon public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### Step 3: Enable Google OAuth
+
+1. Go to **Authentication** → **Providers**
+2. Enable **Google** provider
+3. Add Google OAuth credentials (Client ID & Secret)
+4. Add authorized redirect URLs:
+   - `http://localhost:3000` (development)
+   - `https://your-domain.com` (production)
+
+### Step 4: Configure Image Storage
+
+1. Go to **Storage** → **Buckets**
+2. Create a bucket named `restaurant-images`
+3. Set bucket to **Public**
+4. Run the SQL policies from `database-setup.sql` Section 1 in Supabase SQL Editor
+
+**Storage Folder Structure:**
+```
+restaurant-images/
+├── categories/    # Category images
+└── menu-items/   # Menu item images
+```
+
+### Step 5: Update Environment Variables
+
+Add to `.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+```
+
+## 📸 Image Upload Setup
+
+### Prerequisites
+- Supabase bucket `restaurant-images` created
+- Storage policies configured (see `database-setup.sql`)
+
+### How It Works
+1. Admin uploads image via admin dashboard
+2. Image is uploaded to Supabase Storage
+3. Public CDN URL is stored in database
+4. Images are displayed instantly via CDN
+
+### Troubleshooting
+
+**Error: "Failed to upload image"**
+- Check Supabase bucket exists and is public
+- Verify environment variables are set correctly
+- Run storage policies from `database-setup.sql`
+
+**Error: "next/image unconfigured host"**
+- Add Supabase domain to `next.config.ts` `remotePatterns`
+
+---
+
+## 🔗 Related Documentation
+
+- **Backend API**: See `backend/README.md`
+- **Database Setup**: See `database-setup.sql`
+- **Authentication System**: See `backend/README.md` (Authentication section)
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support or questions, please open an issue in the GitHub repository.
+MIT
