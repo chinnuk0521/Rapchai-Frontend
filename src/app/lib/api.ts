@@ -1,5 +1,16 @@
 // API Configuration and Utility Functions
-const API_BASE_URL = '/api';
+// In production: Use NEXT_PUBLIC_API_URL (your deployed backend URL)
+// In development: Use /api which gets rewritten to localhost:3001 via next.config.ts
+const getApiBaseUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    // Client-side: Use env var if set, otherwise use /api (for rewrites in dev)
+    return process.env.NEXT_PUBLIC_API_URL || '/api';
+  }
+  // Server-side: Always use env var or default to localhost
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // API Response Types
 export interface ApiResponse<T> {
