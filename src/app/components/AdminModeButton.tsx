@@ -1,5 +1,5 @@
 "use client";
-import { useAuth } from "../lib/auth";
+import { useAuth } from "../lib/auth-hydration-safe";
 import Link from "next/link";
 
 export default function AdminModeButton() {

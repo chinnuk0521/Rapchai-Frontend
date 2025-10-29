@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import CustomerMenu from "../../components/CustomerMenu";
-import CustomerCart from "../../components/CustomerCart";
 import QRCodeGenerator from "../../components/QRCodeGenerator";
 import { useMenuData } from "../../lib/hooks";
 import type { MenuItem } from "../../lib/types";
@@ -27,8 +26,7 @@ export default function CustomerOrderingPage() {
         <CustomerMenu items={menuItems} />
       </div>
 
-      {/* Cart Component */}
-      <CustomerCart items={menuItems} />
+      {/* Cart Component - Now handled globally via UnifiedCart */}
 
       {/* QR Code Generator */}
       <QRCodeGenerator />

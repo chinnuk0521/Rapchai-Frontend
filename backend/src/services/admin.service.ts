@@ -375,6 +375,73 @@ export class AdminService {
     }
   }
 
+  static async createBooking(data: any) {
+    try {
+      const { name, phone, email, partySize, date, notes, eventId } = data;
+
+      // Validate event exists if eventId is provided
+      if (eventId) {
+        const event = await prisma.event.findUnique({
+          where: { id: eventId },
+        });
+
+        if (!event) {
+          throw new NotFoundError('Event not found');
+        }
+
+        // Check capacity if maxCapacity is set
+        if (event.maxCapacity && event.currentBookings + partySize > event.maxCapacity) {
+          throw new ConflictError('Event is fully booked');
+        }
+      }
+
+      // Create booking
+      const booking = await prisma.booking.create({
+        data: {
+          name,
+          phone,
+          email: email || null,
+          partySize,
+          date: new Date(date),
+          notes: notes || null,
+          eventId: eventId || null,
+          status: 'PENDING',
+        },
+        include: {
+          event: {
+            select: {
+              id: true,
+              title: true,
+              startAt: true,
+              endAt: true,
+              location: true,
+              imageUrl: true,
+            },
+          },
+        },
+      });
+
+      // Update event booking count if eventId is provided
+      if (eventId) {
+        await prisma.event.update({
+          where: { id: eventId },
+          data: {
+            currentBookings: {
+              increment: partySize,
+            },
+          },
+        });
+      }
+
+      logger.info('Booking created successfully', { bookingId: booking.id });
+
+      return booking;
+    } catch (error) {
+      logger.error('Create booking failed:', error);
+      throw error;
+    }
+  }
+
   static async updateBookingStatus(id: string, status: string) {
     try {
       const booking = await prisma.booking.findUnique({
@@ -853,6 +920,40 @@ export class AdminService {
       return category;
     } catch (error) {
       logger.error('Create category failed:', error);
+      throw error;
+    }
+  }
+
+  static async updateCategory(id: string, data: any) {
+    try {
+      const category = await prisma.category.update({
+        where: { id },
+        data,
+      });
+
+      return category;
+    } catch (error) {
+      logger.error('Update category failed:', error);
+      throw error;
+    }
+  }
+
+  static async deleteCategory(id: string) {
+    try {
+      // Check if category has menu items
+      const menuItemsCount = await prisma.menuItem.count({
+        where: { categoryId: id },
+      });
+
+      if (menuItemsCount > 0) {
+        throw new ConflictError('Cannot delete category with existing menu items');
+      }
+
+      await prisma.category.delete({
+        where: { id },
+      });
+    } catch (error) {
+      logger.error('Delete category failed:', error);
       throw error;
     }
   }

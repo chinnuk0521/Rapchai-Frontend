@@ -51,13 +51,11 @@ async function orderRoutes(fastify: FastifyInstance) {
     return reply.send({ order: result });
   }));
 
-  // Get orders by customer
-  fastify.get('/customer/:customerId', {
-    preHandler: [authMiddleware],
-  }, asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
-    const { customerId } = request.params as any;
+  // Get orders by customer phone (public - for order tracking)
+  fastify.get('/customer/:phone', asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
+    const { phone } = request.params as any;
     const { page, limit } = request.query as any;
-    const result = await OrderService.getOrdersByCustomer(customerId, page, limit);
+    const result = await OrderService.getOrdersByCustomerPhone(phone, page, limit);
     return reply.send(result);
   }));
 

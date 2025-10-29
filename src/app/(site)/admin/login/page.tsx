@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../../lib/auth";
+import { useAuth } from "../../../lib/auth-hydration-safe";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("chandu.kalluru@outlook.com");

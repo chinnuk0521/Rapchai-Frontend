@@ -29,16 +29,16 @@ export async function authMiddleware(
     const token = authHeader.substring(7);
     const payload = JWTService.verifyAccessToken(token);
 
-    // Verify user still exists
+    // Verify user still exists and is active
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
-      select: { id: true, email: true, role: true },
+      select: { id: true, email: true, role: true, isActive: true },
     });
 
-    if (!user) {
+    if (!user || !user.isActive) {
       return reply.status(401).send({
         error: 'Unauthorized',
-        message: 'User not found',
+        message: 'User not found or inactive',
         statusCode: 401,
       });
     }

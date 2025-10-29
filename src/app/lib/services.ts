@@ -113,25 +113,36 @@ export const orderApi = {
 
 // Event API Services
 export const eventApi = {
-  // Get all events
+  // Get all events (public)
   getEvents: (params?: PaginationParams): Promise<PaginatedResponse<Event>> =>
-    api.get(`/admin/events${params ? `?${buildQueryString(params)}` : ''}`),
+    api.get(`/events${params ? `?${buildQueryString(params)}` : ''}`),
 
-  // Get event by ID
+  // Get event by ID (public)
   getEventById: (id: string): Promise<{ event: Event }> =>
-    api.get(`/admin/events/${id}`),
+    api.get(`/events/${id}`),
 
-  // Create event (admin)
-  createEvent: (data: Partial<Event>): Promise<{ event: Event }> =>
-    api.post('/admin/events', data),
+  // Admin event operations (require authentication)
+  admin: {
+    // Get all events (admin)
+    getEvents: (params?: PaginationParams): Promise<PaginatedResponse<Event>> =>
+      api.get(`/admin/events${params ? `?${buildQueryString(params)}` : ''}`),
 
-  // Update event (admin)
-  updateEvent: (id: string, data: Partial<Event>): Promise<{ event: Event }> =>
-    api.put(`/admin/events/${id}`, data),
+    // Get event by ID (admin)
+    getEventById: (id: string): Promise<{ event: Event }> =>
+      api.get(`/admin/events/${id}`),
 
-  // Delete event (admin)
-  deleteEvent: (id: string): Promise<{ message: string }> =>
-    api.delete(`/admin/events/${id}`),
+    // Create event (admin)
+    createEvent: (data: Partial<Event>): Promise<{ event: Event }> =>
+      api.post('/admin/events', data),
+
+    // Update event (admin)
+    updateEvent: (id: string, data: Partial<Event>): Promise<{ event: Event }> =>
+      api.put(`/admin/events/${id}`, data),
+
+    // Delete event (admin)
+    deleteEvent: (id: string): Promise<{ message: string }> =>
+      api.delete(`/admin/events/${id}`),
+  },
 };
 
 // Booking API Services

@@ -1,16 +1,23 @@
 "use client";
 import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import RobustImage from "../../components/RobustImage";
 import { IMG } from "../../lib/images";
-import Cart from "../../components/Cart";
+// Cart is now handled globally via UnifiedCart in DynamicLayout
 import { useMenuData } from "../../lib/hooks";
+import { normalizeCategory } from "../../lib/menu-utils";
 import type { MenuItem, Category } from "../../lib/types";
 
 const getImageForCategory = (category: string): string => {
   switch (category) {
-    case "Chai/Coffee": return IMG.chai;
+    case "Chais & Signature Coffees": return IMG.chai;
     case "Mini Burgers": return IMG.burger;
     case "Sandwiches": return IMG.sandwich;
+    case "Rolls & Soups": return IMG.roll;
+    case "Our Specials": return IMG.special;
+    case "Our Squares": return IMG.square;
+    // Legacy mappings for backward compatibility
+    case "Chai/Coffee": return IMG.chai;
     case "Rolls": return IMG.roll;
     case "Soups": return IMG.soup;
     case "Salads": return IMG.salad;
@@ -23,19 +30,49 @@ const getImageForCategory = (category: string): string => {
 
 export default function MenuClient() {
   const { menuItems, categories, loading, refetch } = useMenuData();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [vegOnly, setVegOnly] = useState<boolean | null>(null);
-  const [active, setActive] = useState<string | "All">("All");
+  
+  // Get category from URL query parameter
+  const categoryFromUrl = searchParams.get('category') || null;
   
   // Use API data only - no fallback to static data
   const items = menuItems;
-  const categoryNames = categories.map(cat => cat.name);
   
+  // Handle category click - navigate to filtered view
+  const handleCategoryClick = (category: Category) => {
+    const categoryParam = category.slug || category.name;
+    router.push(`/menu?category=${encodeURIComponent(categoryParam)}`);
+  };
+
+  // Filter items based on category from URL and veg filter
   const filtered = items
     .filter((it) => (vegOnly === null ? true : vegOnly ? it.veg : !it.veg))
-    .filter((it) => (active === "All" ? true : it.category === active));
+    .filter((it) => {
+      // If no category in URL, show all items
+      if (!categoryFromUrl) return true;
+      
+      // Handle both old format (string) and new format (object with name property)
+      const categoryName = typeof it.category === 'string' ? it.category : it.category?.name;
+      const categorySlug = typeof it.category === 'object' && it.category?.slug ? it.category.slug : null;
+      
+      // Normalize for comparison (case-insensitive, handle spaces)
+      const urlCategoryNormalized = normalizeCategory(categoryFromUrl);
+      const itemCategoryNameNormalized = normalizeCategory(categoryName);
+      const itemCategorySlugNormalized = normalizeCategory(categorySlug);
+      
+      // Match by name (normalized) or slug
+      return (
+        itemCategoryNameNormalized === urlCategoryNormalized ||
+        itemCategorySlugNormalized === urlCategoryNormalized ||
+        // Also try direct match (in case category name has different format)
+        categoryName?.toLowerCase().trim() === categoryFromUrl.toLowerCase().trim()
+      );
+    });
 
   // Loading state
-  if (loading.isLoading && items.length === 0) {
+  if (loading.isLoading && items.length === 0 && categories.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
@@ -47,7 +84,7 @@ export default function MenuClient() {
   }
 
   // Error state
-  if (loading.error && items.length === 0) {
+  if (loading.error && items.length === 0 && categories.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 max-w-md mx-auto">
@@ -64,12 +101,101 @@ export default function MenuClient() {
     );
   }
 
+  // Show category cards when no category is selected
+  if (!categoryFromUrl) {
+    return (
+      <>
+        <div className="space-y-8">
+          {/* Category Cards Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {categories
+              .filter((cat) => cat.isActive === true) // Only show active categories
+              .map((category) => {
+                // Get item count for this category
+                const itemCount = items.filter((it) => {
+                  const itemCategoryName = typeof it.category === 'string' ? it.category : it.category?.name;
+                  const itemCategorySlug = typeof it.category === 'object' && it.category?.slug ? it.category.slug : null;
+                  return (
+                    itemCategoryName === category.name ||
+                    itemCategorySlug === category.slug
+                  );
+                }).length;
+
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => handleCategoryClick(category)}
+                    className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white to-[var(--rc-creamy-beige)] shadow-xl ring-2 ring-[var(--rc-orange)]/20 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2"
+                  >
+                    {/* Category Image */}
+                    <div className="relative h-48 overflow-hidden">
+                      <RobustImage
+                        src={category.imageUrl || getImageForCategory(category.name)}
+                        alt={category.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        loading="lazy"
+                        quality={85}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
+                    </div>
+                    
+                    {/* Category Info */}
+                    <div className="p-6 text-center">
+                      <h3 className="font-black text-[var(--rc-espresso-brown)] text-lg mb-2 group-hover:text-[var(--rc-orange)] transition-colors">
+                        {category.name}
+                      </h3>
+                      <p className="text-sm text-[var(--rc-text-secondary)] font-semibold">
+                        {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                      </p>
+                    </div>
+
+                    {/* Hover Arrow Indicator */}
+                    <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-10 h-10 rounded-full bg-[var(--rc-orange)] flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+          </div>
+
+          {/* Empty State for Categories */}
+          {categories.filter((cat) => cat.isActive === true).length === 0 && (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">📂</div>
+              <h3 className="text-2xl font-bold text-[var(--rc-espresso-brown)] mb-2">No categories available</h3>
+              <p className="text-[var(--rc-text-secondary)] font-medium">Categories will appear here once they are added.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Cart Component - Now handled globally via UnifiedCart */}
+      </>
+    );
+  }
+
+  // Show filtered menu items when category is selected
   return (
     <>
       <div className="space-y-8">
-        {/* Filter Controls */}
+        {/* Back Button */}
+        <button
+          onClick={() => router.push('/menu')}
+          className="flex items-center gap-2 text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-semibold mb-4"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Categories
+        </button>
+
+        {/* Filter Bar - ALL | Veg | Non-Veg */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          {/* Veg/Non-Veg Filter */}
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold text-[var(--rc-text-secondary)]">Filter:</span>
             <div className="flex items-center gap-2">
@@ -81,7 +207,7 @@ export default function MenuClient() {
                     : "bg-white text-[var(--rc-espresso-brown)] border-[var(--rc-espresso-brown)]/20 hover:border-[var(--rc-orange)] hover:bg-[var(--rc-orange)]/5"
                 }`}
               >
-                All Items
+                ALL
               </button>
               <button 
                 onClick={() => setVegOnly(true)} 
@@ -91,7 +217,7 @@ export default function MenuClient() {
                     : "bg-white text-[var(--rc-espresso-brown)] border-[var(--rc-espresso-brown)]/20 hover:border-[var(--rc-orange)] hover:bg-[var(--rc-orange)]/5"
                 }`}
               >
-                Veg Only
+                Veg
               </button>
               <button 
                 onClick={() => setVegOnly(false)} 
@@ -108,27 +234,7 @@ export default function MenuClient() {
 
           {/* Results Count */}
           <div className="text-sm font-semibold text-[var(--rc-orange)] bg-[var(--rc-orange)]/10 px-4 py-2 rounded-xl">
-            {filtered.length} items found
-          </div>
-        </div>
-
-        {/* Category Filter */}
-        <div className="space-y-4">
-          <div className="text-sm font-semibold text-[var(--rc-text-secondary)]">Categories:</div>
-          <div className="flex flex-wrap gap-3">
-            {["All",...categoryNames].map((c) => (
-              <button 
-                key={c} 
-                onClick={() => setActive(c as typeof active)} 
-                className={`px-6 py-3 rounded-xl border-2 whitespace-nowrap transition-all duration-300 font-bold text-sm ${
-                  active===c 
-                    ? "bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white border-transparent shadow-lg transform scale-105" 
-                    : "bg-white text-[var(--rc-espresso-brown)] border-[var(--rc-espresso-brown)]/20 hover:border-[var(--rc-orange)] hover:bg-[var(--rc-orange)]/5 hover:scale-105"
-                }`}
-              >
-                {c}
-              </button>
-            ))}
+            {filtered.length} {filtered.length === 1 ? 'item' : 'items'} found
           </div>
         </div>
 
@@ -138,7 +244,7 @@ export default function MenuClient() {
             <div key={it.id} className="group rounded-3xl bg-gradient-to-br from-white to-[var(--rc-creamy-beige)] shadow-2xl ring-2 ring-[var(--rc-orange)]/20 overflow-hidden hover:shadow-3xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2">
               <div className="relative h-64 overflow-hidden">
                 <RobustImage
-                  src={getImageForCategory(it.category?.name || it.category)}
+                  src={it.imageUrl || getImageForCategory(typeof it.category === 'string' ? it.category : it.category?.name)}
                   alt={it.name || it.title}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -166,7 +272,7 @@ export default function MenuClient() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-[var(--rc-text-secondary)] bg-[var(--rc-creamy-beige)] px-3 py-1 rounded-full">
-                    {it.category?.name || it.category}
+                    {typeof it.category === 'string' ? it.category : it.category?.name}
                   </span>
                   <AddToCartButton item={it} />
                 </div>
@@ -180,13 +286,24 @@ export default function MenuClient() {
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🍽️</div>
             <h3 className="text-2xl font-bold text-[var(--rc-espresso-brown)] mb-2">No items found</h3>
-            <p className="text-[var(--rc-text-secondary)] font-medium">Try adjusting your filters to see more items.</p>
+            <p className="text-[var(--rc-text-secondary)] font-medium mb-4">
+              {categoryFromUrl 
+                ? `No items found in "${decodeURIComponent(categoryFromUrl)}" category.`
+                : "Try adjusting your filters to see more items."}
+            </p>
+            <button
+              onClick={() => {
+                setVegOnly(null);
+              }}
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white font-bold hover:shadow-lg transition-all"
+            >
+              Clear Filters
+            </button>
           </div>
         )}
       </div>
 
-      {/* Cart Component */}
-      <Cart items={items} />
+      {/* Cart Component - Now handled globally via UnifiedCart */}
     </>
   );
 }
@@ -204,7 +321,7 @@ function AddToCartButton({ item }: { item: any }) {
       title: item.name || item.title,
       veg: item.veg,
       price: item.price,
-      category: item.category?.name || item.category,
+      category: typeof item.category === 'string' ? item.category : item.category?.name,
       available: item.available !== false, // Default to true if not specified
     };
     

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { IMG } from "../lib/images";
 
-type MenuItem = { id: number; title: string; veg: boolean; price: number; category: string; available: boolean };
+type MenuItem = { id: number; title: string; veg: boolean; price: number; category: string; available: boolean; imageUrl?: string };
 
 interface CustomerMenuProps {
   items: MenuItem[];
@@ -119,7 +119,7 @@ export default function CustomerMenu({ items }: CustomerMenuProps) {
             {/* Item Image */}
             <div className="relative h-48 overflow-hidden">
               <Image
-                src={getImageForCategory(item.category)}
+                src={item.imageUrl || getImageForCategory(item.category)}
                 alt={item.title}
                 fill
                 className="object-cover transition-transform duration-500 hover:scale-110"

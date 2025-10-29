@@ -3,9 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { ReactNode } from "react";
-import NavBar from "./components/NavBar";
 import ConditionalFooter from "./components/ConditionalFooter";
-import { AuthProvider } from "./lib/auth";
+import { AuthProvider } from "./lib/auth-hydration-safe";
+import { CustomerAuthProvider } from "./lib/customer-auth";
+import { CartProvider } from "./lib/cart-context";
+import { HydrationBoundary } from "./components/HydrationBoundary";
+import DynamicLayout from "./components/DynamicLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -102,14 +105,19 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
         suppressHydrationWarning={true}
       >
-        <JsonLd />
-        <AuthProvider>
-          <NavBar />
-          <main className="w-full pt-16">
-            {children}
-          </main>
-          <ConditionalFooter />
-        </AuthProvider>
+        <HydrationBoundary>
+          <JsonLd />
+          <AuthProvider>
+            <CustomerAuthProvider>
+              <CartProvider>
+                <DynamicLayout>
+                  {children}
+                </DynamicLayout>
+                <ConditionalFooter />
+              </CartProvider>
+            </CustomerAuthProvider>
+          </AuthProvider>
+        </HydrationBoundary>
       </body>
     </html>
   );
