@@ -32,13 +32,19 @@ export default function CustomerOrderingPage() {
       <QRCodeGenerator />
 
       {/* Footer */}
-      <div className="bg-[var(--rc-espresso-brown)] text-white py-6 mt-12">
-        <div className="w-[95%] mx-auto px-4 text-center">
-          <h3 className="text-lg font-bold mb-2">Rapchai Café</h3>
-          <p className="text-sm opacity-80 mb-4">Koramangala, Bangalore</p>
-          <div className="flex justify-center gap-6 text-sm">
-            <span>📱 WhatsApp: +91 8179299096</span>
-            <span>💳 UPI: 8179299096@paytm</span>
+      <div className="bg-[var(--rc-espresso-brown)] text-white py-6 md:py-8 mt-8 md:mt-12">
+        <div className="w-full mx-auto px-4 md:px-6 text-center">
+          <h3 className="text-xl md:text-2xl font-black mb-3 md:mb-4">Rapchai Café</h3>
+          <p className="text-sm md:text-base opacity-90 mb-4 md:mb-6">Koramangala, Bangalore</p>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 md:gap-6 text-sm md:text-base">
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm">
+              <span className="text-lg">📱</span>
+              <span>WhatsApp: +91 8179299096</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm">
+              <span className="text-lg">💳</span>
+              <span>UPI: 8179299096@paytm</span>
+            </div>
           </div>
         </div>
       </div>

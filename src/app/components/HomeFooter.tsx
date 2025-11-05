@@ -42,10 +42,10 @@ export default function HomeFooter() {
   }, [showTeamText, teamIndex, teamTextFull]);
 
   return (
-    <footer className="relative w-full h-screen bg-gradient-to-br from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] flex flex-col justify-center items-center overflow-hidden">
+    <footer className="relative w-full h-screen bg-gradient-to-br from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] flex flex-col justify-center items-center overflow-hidden px-4 md:px-6">
       {/* Main Typing Animation */}
-      <div className="text-center max-w-6xl mx-auto px-4">
-        <h2 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight" style={{ 
+      <div className="text-center max-w-6xl mx-auto w-full">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black text-white mb-6 md:mb-8 leading-[1.1] tracking-tight px-4" style={{ 
           fontFamily: 'Inter, system-ui, sans-serif',
           textShadow: '2px 4px 20px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.3)',
           fontWeight: 900,
@@ -59,8 +59,8 @@ export default function HomeFooter() {
         
         {/* Team Text - Right aligned, smaller */}
         {showTeamText && (
-          <div className="text-right">
-            <p className="text-xl sm:text-2xl lg:text-3xl text-white font-semibold" style={{ 
+          <div className="text-center md:text-right px-4">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-white font-semibold" style={{ 
               textShadow: '1px 2px 10px rgba(0,0,0,0.4)',
               fontFamily: 'Inter, system-ui, sans-serif'
             }}>
