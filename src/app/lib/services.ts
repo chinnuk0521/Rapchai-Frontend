@@ -72,7 +72,7 @@ export const menuApi = {
     api.put(`/menu/items/${id}`, data),
 
   // Admin: Bulk create menu items
-  bulkCreateMenuItems: (items: any[]): Promise<{ success: number; errors: number; results: MenuItem[]; errors: any[] }> =>
+  bulkCreateMenuItems: (items: any[]): Promise<{ success: number; errorCount: number; results: MenuItem[]; errors: any[] }> =>
     api.post('/menu/items/bulk', { items }),
 };
 
