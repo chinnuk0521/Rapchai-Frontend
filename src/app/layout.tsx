@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import ConditionalFooter from "./components/ConditionalFooter";
 import { AuthProvider } from "./lib/auth-hydration-safe";
 import { CustomerAuthProvider } from "./lib/customer-auth";
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://rapchai.com"),
 };
 
-function Footer(): JSX.Element {
+function Footer(): React.ReactElement {
   return (
     <footer className="mt-24 border-t border-black/10">
       <div className="w-full container-px py-10 grid gap-8 sm:grid-cols-2">
@@ -75,7 +75,7 @@ function Footer(): JSX.Element {
   );
 }
 
-function JsonLd(): JSX.Element {
+function JsonLd(): React.ReactElement {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CafeOrCoffeeShop",
