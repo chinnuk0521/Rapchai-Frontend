@@ -92,7 +92,11 @@ Before deploying:
 
 1. **First Deploy**: Will use default settings
 2. **Add Environment Variables**: Go to Settings → Environment Variables
-3. **Redeploy**: Trigger a new deployment
+3. **Configure Supabase Redirect URLs**: 
+   - Go to Supabase Dashboard → Authentication → URL Configuration
+   - Add redirect URL: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback`
+   - Also add for development: `http://localhost:3000/auth/callback`
+4. **Redeploy**: Trigger a new deployment
 
 ---
 

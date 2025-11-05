@@ -57,10 +57,14 @@ export default function CustomerAuthModal({
     setIsLoading(true);
 
     try {
+      // Use window.location.origin to automatically detect current domain
+      // This works for both localhost (development) and Vercel deployment (production)
+      // Example: http://localhost:3000 or https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
       const redirectUrl = `${window.location.origin}/auth/callback`;
       authModalLogger.table('OAuth Configuration', {
         provider: 'google',
         redirectUrl,
+        currentOrigin: window.location.origin,
         access_type: 'offline',
         prompt: 'consent',
       });
