@@ -57,10 +57,30 @@ export default function CustomerAuthModal({
     setIsLoading(true);
 
     try {
-      // Use window.location.origin to automatically detect current domain
-      // This works for both localhost (development) and Vercel deployment (production)
-      // Example: http://localhost:3000 or https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
-      const redirectUrl = `${window.location.origin}/auth/callback`;
+      // CRITICAL: Get the current origin - this should be the Vercel URL in production
+      const currentOrigin = window.location.origin;
+      const currentUrl = window.location.href;
+      const hostname = window.location.hostname;
+      
+      // Build redirect URL - always use current origin (works for both localhost and Vercel)
+      // This ensures Supabase redirects back to the correct domain
+      const redirectUrl = `${currentOrigin}/auth/callback`;
+      
+      // Log detailed information about the URL being used
+      console.log('%c🔍 URL Detection:', 'color: #2196F3; font-size: 14px; font-weight: bold;');
+      console.log('%c   Hostname:', 'color: #666; font-weight: bold;', hostname);
+      console.log('%c   Origin:', 'color: #666; font-weight: bold;', currentOrigin);
+      console.log('%c   Full URL:', 'color: #666; font-weight: bold;', currentUrl);
+      console.log('%c   Redirect URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+      console.log('%c   Is Localhost:', 'color: #666; font-weight: bold;', currentOrigin.includes('localhost'));
+      console.log('%c   Is Vercel:', 'color: #666; font-weight: bold;', currentOrigin.includes('vercel.app'));
+      
+      // Warn if we detect localhost on Vercel deployment
+      if (currentOrigin.includes('localhost') && !hostname.includes('localhost')) {
+        console.warn('%c⚠️  WARNING: Detected localhost origin but hostname is different!', 'color: #FF6B35; font-weight: bold; background: #fff3e0; padding: 10px;');
+        console.warn('%c   This might cause Supabase to redirect to localhost', 'color: #FF6B35; font-weight: bold;');
+        console.warn('%c   Check Supabase Site URL configuration in dashboard', 'color: #FF6B35; font-weight: bold;');
+      }
       
       // Explain OAuth flow in console
       console.log('%c🔄 OAuth Flow Explanation', 'color: #2196F3; font-size: 14px; font-weight: bold;');
@@ -73,19 +93,43 @@ export default function CustomerAuthModal({
       console.log('   ', redirectUrl);
       console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
       console.log('%c📋 URL Configuration:', 'color: #FF9800; font-weight: bold;');
+      console.log('%c   Current Origin:', 'color: #666; font-weight: bold;', currentOrigin);
+      console.log('%c   Current URL:', 'color: #666; font-weight: bold;', currentUrl);
+      console.log('%c   Redirect URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
       console.log('%c   Google Cloud Console:', 'color: #666; font-weight: bold;');
       console.log('   ', 'https://ukdrlbhorhsaupkskfvy.supabase.co/auth/v1/callback');
       console.log('%c   Supabase Dashboard:', 'color: #666; font-weight: bold;');
       console.log('   ', redirectUrl);
       console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
+      console.log('%c⚠️  IMPORTANT: Make sure Supabase Site URL matches this redirect URL!', 'color: #FF9800; font-weight: bold; background: #fff3e0; padding: 5px;');
       
       authModalLogger.table('OAuth Configuration', {
         provider: 'google',
         redirectUrl,
-        currentOrigin: window.location.origin,
+        currentOrigin,
+        hostname,
+        currentUrl,
         access_type: 'offline',
         prompt: 'consent',
       });
+      
+      // Log the exact URL being sent to Supabase
+      console.log('%c📤 Sending to Supabase:', 'color: #9C27B0; font-size: 14px; font-weight: bold;');
+      console.log('%c   redirectTo:', 'color: #666; font-weight: bold;', redirectUrl);
+      
+      // Critical warning if we detect localhost on production
+      if (currentOrigin.includes('localhost')) {
+        console.error('%c🚨 CRITICAL: Localhost detected!', 'color: #FF0000; font-size: 16px; font-weight: bold; background: #ffebee; padding: 10px; border-radius: 5px;');
+        console.error('%c   If Supabase redirects to localhost, check:', 'color: #FF0000; font-weight: bold;');
+        console.error('%c   1. Supabase Dashboard → Authentication → URL Configuration', 'color: #FF0000; font-weight: bold;');
+        console.error('%c   2. Set Site URL to:', 'color: #FF0000; font-weight: bold;');
+        console.error('      https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app');
+        console.error('%c   3. Add redirect URL:', 'color: #FF0000; font-weight: bold;');
+        console.error('      https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback');
+      } else {
+        console.log('%c✅ Using Vercel URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+        console.log('%c   ⚠️  Make sure Supabase Site URL matches this!', 'color: #FF9800; font-weight: bold;');
+      }
 
       const oauthStartTime = Date.now();
       const { data, error: signInError } = await supabase.auth.signInWithOAuth({
