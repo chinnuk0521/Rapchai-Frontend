@@ -453,14 +453,14 @@ ${customerInfo.orderType === "takeaway" ? `• Address: ${customerInfo.address}`
               <button
                 onClick={handleApiOrder}
                 disabled={
-                  loading ||
+                  loading.isLoading ||
                   !customerInfo.name ||
                   !customerInfo.phone ||
                   (customerInfo.orderType === "takeaway" && !customerInfo.address)
                 }
                 className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white font-bold text-lg hover:from-[var(--rc-espresso-brown)] hover:to-[var(--rc-orange)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Placing Order..." : "Place Order"}
+                {loading.isLoading ? "Placing Order..." : "Place Order"}
               </button>
 
               {/* WhatsApp Order Button */}
