@@ -54,6 +54,19 @@ After saving, check the console logs when clicking "Continue with Google":
    - If not: Falls back to Site URL
 3. If Site URL is incorrect, it redirects to the wrong URL
 
+## ✅ Code Fix Applied
+
+The code now **hardcodes the production Vercel URL** in `CustomerAuthModal.tsx`:
+```typescript
+const PRODUCTION_URL = 'https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app';
+const redirectUrl = `${PRODUCTION_URL}/auth/callback`;
+```
+
+This ensures that:
+- The `redirectTo` parameter **always** uses the Vercel URL
+- Even if Supabase Site URL is set to localhost, the redirect will go to Vercel
+- **BUT**: You must still add this URL to Supabase's **Redirect URLs** list, otherwise Supabase will reject it
+
 ## ✅ Correct Configuration
 
 | Setting | Value |
@@ -81,10 +94,11 @@ After saving, check the console logs when clicking "Continue with Google":
 
 ## 📝 Quick Checklist
 
-- [ ] Supabase Site URL = Vercel URL
-- [ ] Redirect URLs include Vercel URL
-- [ ] Code uses `window.location.origin` (already correct)
-- [ ] Console logs show Vercel URL
+- [x] Code uses hardcoded production URL (already fixed)
+- [ ] **CRITICAL**: Supabase Redirect URLs must include: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback`
+- [ ] Supabase Site URL should be set to: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app` (optional, but recommended)
 - [ ] Browser cache cleared
 - [ ] Supabase changes saved
+
+**Important**: Even though the code hardcodes the production URL, Supabase will **only** redirect to URLs that are in the **Redirect URLs** list. Make sure to add the Vercel callback URL there!
 

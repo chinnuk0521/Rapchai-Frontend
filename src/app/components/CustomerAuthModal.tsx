@@ -57,22 +57,27 @@ export default function CustomerAuthModal({
     setIsLoading(true);
 
     try {
-      // CRITICAL: Get the current origin - this should be the Vercel URL in production
+      // CRITICAL: Always use production Vercel URL for redirect
+      // This overrides Supabase's Site URL setting and ensures correct redirect
+      const PRODUCTION_URL = 'https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app';
+      
+      // Get current origin for logging
       const currentOrigin = window.location.origin;
       const currentUrl = window.location.href;
       const hostname = window.location.hostname;
       
-      // Build redirect URL - always use current origin for production deployment
-      // This ensures Supabase redirects back to the correct domain
-      const redirectUrl = `${currentOrigin}/auth/callback`;
+      // ALWAYS use production URL for redirect, regardless of current origin
+      // This ensures Supabase redirects to Vercel even if Site URL is set to localhost
+      const redirectUrl = `${PRODUCTION_URL}/auth/callback`;
       
       // Log detailed information about the URL being used
       console.log('%c🔍 URL Detection:', 'color: #2196F3; font-size: 14px; font-weight: bold;');
       console.log('%c   Hostname:', 'color: #666; font-weight: bold;', hostname);
-      console.log('%c   Origin:', 'color: #666; font-weight: bold;', currentOrigin);
+      console.log('%c   Current Origin:', 'color: #666; font-weight: bold;', currentOrigin);
       console.log('%c   Full URL:', 'color: #666; font-weight: bold;', currentUrl);
-      console.log('%c   Redirect URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
-      console.log('%c   Is Vercel:', 'color: #666; font-weight: bold;', currentOrigin.includes('vercel.app'));
+      console.log('%c   Production URL (HARDCODED):', 'color: #4CAF50; font-weight: bold;', PRODUCTION_URL);
+      console.log('%c   Redirect URL (FORCED):', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+      console.log('%c   ⚠️  Using hardcoded production URL to override Supabase Site URL!', 'color: #FF9800; font-weight: bold; background: #fff3e0; padding: 5px;');
       
       // Explain OAuth flow in console
       console.log('%c🔄 OAuth Flow Explanation', 'color: #2196F3; font-size: 14px; font-weight: bold;');
@@ -109,14 +114,14 @@ export default function CustomerAuthModal({
       console.log('%c📤 Sending to Supabase:', 'color: #9C27B0; font-size: 14px; font-weight: bold;');
       console.log('%c   redirectTo:', 'color: #666; font-weight: bold;', redirectUrl);
       
-      // Verify we're using the correct production URL
-      if (!currentOrigin.includes('vercel.app')) {
-        console.warn('%c⚠️  WARNING: Not using Vercel URL!', 'color: #FF9800; font-size: 14px; font-weight: bold; background: #fff3e0; padding: 10px;');
-        console.warn('%c   Current origin:', 'color: #FF9800; font-weight: bold;', currentOrigin);
-        console.warn('%c   Expected Vercel URL:', 'color: #FF9800; font-weight: bold;', 'https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app');
-      } else {
-        console.log('%c✅ Using Vercel URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
-        console.log('%c   ⚠️  Make sure Supabase Site URL matches this!', 'color: #FF9800; font-weight: bold;');
+      // Always log that we're using the hardcoded production URL
+      console.log('%c✅ Using HARDCODED Production URL:', 'color: #4CAF50; font-size: 14px; font-weight: bold; background: #e8f5e9; padding: 10px;');
+      console.log('%c   Redirect URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+      console.log('%c   ⚠️  This will override Supabase Site URL setting!', 'color: #FF9800; font-weight: bold;');
+      console.log('%c   📝 Make sure this URL is in Supabase Redirect URLs list!', 'color: #2196F3; font-weight: bold;');
+      
+      if (currentOrigin.includes('localhost')) {
+        console.warn('%c⚠️  NOTE: You are on localhost, but redirect will go to production Vercel URL', 'color: #FF9800; font-weight: bold;');
       }
 
       const oauthStartTime = Date.now();
