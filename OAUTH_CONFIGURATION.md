@@ -28,7 +28,7 @@ The OAuth flow uses **two different redirect URLs** for different steps:
 
 ## ⚠️ IMPORTANT: Supabase Site URL Configuration
 
-**The most common issue:** If Supabase redirects to root (`localhost:3000/#access_token=...`) instead of `/auth/callback`, check your Supabase **Site URL** configuration:
+**The most common issue:** If Supabase redirects to root instead of `/auth/callback`, check your Supabase **Site URL** configuration:
 
 1. Go to **Supabase Dashboard → Authentication → URL Configuration**
 2. Set **Site URL** to:
@@ -40,7 +40,6 @@ The OAuth flow uses **two different redirect URLs** for different steps:
 3. In **Redirect URLs**, add:
    ```
    https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
-   http://localhost:3000/auth/callback
    ```
 
 **Why this matters:**
@@ -85,7 +84,6 @@ https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
 **Redirect URLs:**
 ```
 https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
-http://localhost:3000/auth/callback  (for development)
 ```
 
 **Why this URL?**
@@ -118,8 +116,7 @@ Both URLs are needed because:
 1. **Google → Supabase**: Google needs to know where to redirect after authentication (Supabase handles this)
 2. **Supabase → Frontend**: Supabase needs to know where to redirect after processing (Your frontend handles this)
 
-The code automatically uses `window.location.origin` to detect the current domain, so it works for both:
-- Development: `http://localhost:3000`
+The code automatically uses `window.location.origin` to detect the current domain for production deployment:
 - Production: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app`
 
 ## 🔍 Testing

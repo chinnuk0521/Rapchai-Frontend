@@ -1,8 +1,8 @@
-# 🔧 Fix: Supabase Redirecting to Localhost Instead of Vercel
+# 🔧 Fix: Supabase Redirecting Issues
 
 ## 🚨 The Problem
 
-When clicking "Continue with Google" on your Vercel deployment, Supabase redirects back to `localhost:3000/#access_token=...` instead of your Vercel URL.
+When clicking "Continue with Google" on your Vercel deployment, Supabase might redirect to the wrong URL instead of your Vercel callback URL.
 
 ## ✅ The Solution
 
@@ -17,7 +17,6 @@ The issue is **Supabase's Site URL configuration**. Supabase uses the Site URL f
    ```
    https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
    ```
-   **NOT** `http://localhost:3000` ❌
    **NOT** `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback` ❌
    
    Just the base URL: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app` ✅
@@ -25,7 +24,6 @@ The issue is **Supabase's Site URL configuration**. Supabase uses the Site URL f
 5. In **Redirect URLs**, add:
    ```
    https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
-   http://localhost:3000/auth/callback
    ```
 
 6. Click **Save**
@@ -40,41 +38,39 @@ After saving, check the console logs when clicking "Continue with Google":
    Hostname: rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
    Origin: https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
    Redirect URL: https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
-   Is Localhost: false
    Is Vercel: true
 ```
 
-**If you see localhost in the logs:**
-- The Site URL in Supabase is still set to localhost
+**If you see incorrect URLs in the logs:**
+- The Site URL in Supabase might be incorrect
 - Update it to your Vercel URL
 - Redeploy your Vercel app after fixing
 
 ## 🔍 Why This Happens
 
-1. **Supabase Site URL** is set to `localhost:3000` in dashboard
+1. **Supabase Site URL** might be incorrectly configured in dashboard
 2. When OAuth completes, Supabase checks:
    - First: Does the `redirectTo` parameter match an allowed redirect URL?
    - If not: Falls back to Site URL
-3. If Site URL is `localhost:3000`, it redirects there even from Vercel
+3. If Site URL is incorrect, it redirects to the wrong URL
 
 ## ✅ Correct Configuration
 
 | Setting | Value |
 |---------|-------|
 | **Site URL** | `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app` |
-| **Redirect URLs** | `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback`<br>`http://localhost:3000/auth/callback` |
+| **Redirect URLs** | `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback` |
 
 ## 🧪 Testing
 
 1. Deploy your code to Vercel
 2. Open the Vercel deployment URL
 3. Click "Continue with Google"
-4. Check browser console - you should see the Vercel URL, not localhost
+4. Check browser console - you should see the Vercel URL
 5. After Google authentication, you should be redirected to:
    ```
    https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback#access_token=...
    ```
-   NOT `localhost:3000/#access_token=...`
 
 ## 🐛 If Still Not Working
 
@@ -85,10 +81,10 @@ After saving, check the console logs when clicking "Continue with Google":
 
 ## 📝 Quick Checklist
 
-- [ ] Supabase Site URL = Vercel URL (not localhost)
-- [ ] Redirect URLs include both Vercel and localhost
+- [ ] Supabase Site URL = Vercel URL
+- [ ] Redirect URLs include Vercel URL
 - [ ] Code uses `window.location.origin` (already correct)
-- [ ] Console logs show Vercel URL, not localhost
+- [ ] Console logs show Vercel URL
 - [ ] Browser cache cleared
 - [ ] Supabase changes saved
 

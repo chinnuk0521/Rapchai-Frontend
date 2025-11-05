@@ -42,7 +42,6 @@ export default function AppInitializer() {
     console.table({
       'Redirect URL': redirectUrl,
       'Current Origin': window.location.origin,
-      'Is Localhost': window.location.origin.includes('localhost'),
       'Is Vercel': window.location.origin.includes('vercel.app'),
     });
     console.groupEnd();
