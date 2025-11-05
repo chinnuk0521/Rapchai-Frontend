@@ -54,7 +54,7 @@ export function useMenuData() {
       ]);
 
       // Transform API data to frontend format
-      const transformedItems = (itemsResponse.items || []).map((item: any) => ({
+      const transformedItems = (itemsResponse.data || []).map((item: any) => ({
         ...item,
         price: item.pricePaise / 100, // Convert paise to rupees
         veg: item.isVeg,
@@ -63,7 +63,7 @@ export function useMenuData() {
         imageUrl: item.imageUrl, // Ensure imageUrl is passed through
       }));
 
-      const transformedCategories = (categoriesResponse.categories || []).map((cat: any) => ({
+      const transformedCategories = (categoriesResponse.data || []).map((cat: any) => ({
         ...cat,
         name: cat.name,
         imageUrl: cat.imageUrl, // Ensure category imageUrl is passed through
@@ -102,7 +102,7 @@ export function useEventsData() {
       const response = await eventApi.getEvents({ limit: 100 });
       
       // Transform API data to frontend format
-      const transformedEvents = (response.events || []).map((event: any) => ({
+      const transformedEvents = (response.data || []).map((event: any) => ({
         ...event,
         eventDate: event.startAt,
         startTime: formatTimeSSR(event.startAt),
@@ -158,7 +158,7 @@ export function useOrderManagement() {
     try {
       const { orderApi } = await import('./services');
       const response = await orderApi.getOrders(params);
-      setOrders(response.orders || []);
+      setOrders(response.data || []);
       setLoading({ isLoading: false, error: null });
       return response;
     } catch (error) {
