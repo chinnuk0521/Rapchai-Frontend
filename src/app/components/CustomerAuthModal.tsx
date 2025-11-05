@@ -61,6 +61,24 @@ export default function CustomerAuthModal({
       // This works for both localhost (development) and Vercel deployment (production)
       // Example: http://localhost:3000 or https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
       const redirectUrl = `${window.location.origin}/auth/callback`;
+      
+      // Explain OAuth flow in console
+      console.log('%c🔄 OAuth Flow Explanation', 'color: #2196F3; font-size: 14px; font-weight: bold;');
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
+      console.log('%c1️⃣  User clicks "Continue with Google"', 'color: #4CAF50; font-weight: bold;');
+      console.log('%c2️⃣  Frontend → Supabase (redirects to Google)', 'color: #4CAF50; font-weight: bold;');
+      console.log('%c3️⃣  Google authenticates → Supabase callback:', 'color: #4CAF50; font-weight: bold;');
+      console.log('   ', 'https://ukdrlbhorhsaupkskfvy.supabase.co/auth/v1/callback');
+      console.log('%c4️⃣  Supabase processes → Frontend callback:', 'color: #4CAF50; font-weight: bold;');
+      console.log('   ', redirectUrl);
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
+      console.log('%c📋 URL Configuration:', 'color: #FF9800; font-weight: bold;');
+      console.log('%c   Google Cloud Console:', 'color: #666; font-weight: bold;');
+      console.log('   ', 'https://ukdrlbhorhsaupkskfvy.supabase.co/auth/v1/callback');
+      console.log('%c   Supabase Dashboard:', 'color: #666; font-weight: bold;');
+      console.log('   ', redirectUrl);
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
+      
       authModalLogger.table('OAuth Configuration', {
         provider: 'google',
         redirectUrl,
