@@ -40,6 +40,17 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: "https://rapchai.com" },
   metadataBase: new URL("https://rapchai.com"),
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+    viewportFit: "cover",
+  },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fff4e6" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0b0b" },
+  ],
 };
 
 function Footer(): React.ReactElement {

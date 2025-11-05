@@ -222,19 +222,21 @@ ${customerInfo.orderType === "takeaway" ? `• Address: ${customerInfo.address}`
                           ₹{item.price}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="w-8 h-8 rounded-full bg-[var(--rc-orange)] text-white font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors"
+                          className="w-10 h-10 md:w-8 md:h-8 rounded-full bg-[var(--rc-orange)] text-white font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors text-lg md:text-base flex items-center justify-center"
+                          aria-label="Decrease quantity"
                         >
                           -
                         </button>
-                        <span className="font-bold text-[var(--rc-espresso-brown)] min-w-[2rem] text-center">
+                        <span className="font-bold text-[var(--rc-espresso-brown)] min-w-[2.5rem] md:min-w-[2rem] text-center text-base md:text-sm">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-8 h-8 rounded-full bg-[var(--rc-orange)] text-white font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors"
+                          className="w-10 h-10 md:w-8 md:h-8 rounded-full bg-[var(--rc-orange)] text-white font-bold hover:bg-[var(--rc-espresso-brown)] transition-colors text-lg md:text-base flex items-center justify-center"
+                          aria-label="Increase quantity"
                         >
                           +
                         </button>
@@ -337,14 +339,15 @@ ${customerInfo.orderType === "takeaway" ? `• Address: ${customerInfo.address}`
                   onChange={(e) =>
                     setCustomerInfo((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors"
+                  className="w-full px-4 py-3 md:py-2 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors text-base"
                   placeholder="Enter your name"
                   required
+                  autoComplete="name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[var(--rc-espresso-brown)] mb-2">
+                <label className="block text-sm md:text-xs font-semibold text-[var(--rc-espresso-brown)] mb-2">
                   Phone Number *
                 </label>
                 <input
@@ -353,9 +356,11 @@ ${customerInfo.orderType === "takeaway" ? `• Address: ${customerInfo.address}`
                   onChange={(e) =>
                     setCustomerInfo((prev) => ({ ...prev, phone: e.target.value }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors"
+                  className="w-full px-4 py-3 md:py-2 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors text-base"
                   placeholder="+91 98765 43210"
                   required
+                  autoComplete="tel"
+                  inputMode="tel"
                 />
               </div>
 
@@ -373,8 +378,9 @@ ${customerInfo.orderType === "takeaway" ? `• Address: ${customerInfo.address}`
                         tableNumber: e.target.value,
                       }))
                     }
-                    className="w-full px-4 py-3 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors"
+                    className="w-full px-4 py-3 md:py-2 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors text-base"
                     placeholder="e.g., Table 5"
+                    autoComplete="off"
                   />
                 </div>
               )}
@@ -392,10 +398,11 @@ ${customerInfo.orderType === "takeaway" ? `• Address: ${customerInfo.address}`
                         address: e.target.value,
                       }))
                     }
-                    className="w-full px-4 py-3 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors resize-none"
+                    className="w-full px-4 py-3 md:py-2 rounded-xl border-2 border-[var(--rc-espresso-brown)]/20 focus:border-[var(--rc-orange)] focus:ring-2 focus:ring-[var(--rc-orange)]/20 transition-colors resize-none text-base"
                     placeholder="Enter your complete address"
                     rows={3}
                     required
+                    autoComplete="street-address"
                   />
                 </div>
               )}
