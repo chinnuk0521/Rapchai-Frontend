@@ -9,6 +9,7 @@ import { CustomerAuthProvider } from "./lib/customer-auth";
 import { CartProvider } from "./lib/cart-context";
 import { HydrationBoundary } from "./components/HydrationBoundary";
 import DynamicLayout from "./components/DynamicLayout";
+import AuthHashHandler from "./components/AuthHashHandler";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -107,6 +108,7 @@ export default function RootLayout({
       >
         <HydrationBoundary>
           <JsonLd />
+          <AuthHashHandler />
           <AuthProvider>
             <CustomerAuthProvider>
               <CartProvider>
