@@ -164,3 +164,14 @@ export interface OrderQueryParams extends PaginationParams {
   startDate?: string;
   endDate?: string;
 }
+
+// API Response Types
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
