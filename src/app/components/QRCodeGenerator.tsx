@@ -6,7 +6,7 @@ export default function QRCodeGenerator() {
   
   // In a real app, you would generate a proper QR code
   // For now, we'll show a placeholder
-  const websiteUrl = typeof window !== 'undefined' ? `${window.location.origin}/order` : 'https://rapchai.com/order';
+  const websiteUrl = typeof window !== 'undefined' ? `${window.location.origin}/order` : 'https://rapchai.vercel.app/order';
 
   return (
     <div className="fixed bottom-6 left-6 z-40">
