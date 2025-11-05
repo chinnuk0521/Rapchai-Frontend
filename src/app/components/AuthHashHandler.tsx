@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { hashHandlerLogger } from '../lib/logger';
 
 /**
  * Global handler for OAuth hash fragments
@@ -30,12 +31,26 @@ export default function AuthHashHandler() {
 
     // If we have OAuth data in the hash, redirect to callback handler
     if (accessToken || error) {
-      console.log('[AUTH_HASH_HANDLER] Detected OAuth hash fragments on', pathname);
-      console.log('[AUTH_HASH_HANDLER] Redirecting to /auth/callback for processing');
+      hashHandlerLogger.group('=== Hash Handler: OAuth Hash Detected ===');
+      hashHandlerLogger.info('Detected OAuth hash fragments on page', {
+        pathname,
+        hasAccessToken: !!accessToken,
+        hasError: !!error,
+        hashLength: hash.length,
+      });
+      hashHandlerLogger.table('Hash Data', {
+        pathname,
+        hasAccessToken: !!accessToken,
+        hasError: !!error,
+        hashLength: hash.length,
+      });
+      hashHandlerLogger.info('Redirecting to /auth/callback for processing');
+      hashHandlerLogger.navigation(pathname, '/auth/callback', 'hash-redirect');
       
       // Use window.location to preserve hash fragment during redirect
       // The callback page will process it from window.location.hash
       window.location.replace(`/auth/callback${hash}`);
+      hashHandlerLogger.groupEnd();
     }
   }, [pathname, router]);
 
