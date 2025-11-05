@@ -5,7 +5,10 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.formData();
     const file: File | null = data.get('image') as unknown as File;
-    const folder: 'categories' | 'menu-items' = (data.get('folder') as string) || 'menu-items';
+    const folderValue = data.get('folder') as string | null;
+    const folder: 'categories' | 'menu-items' = (folderValue === 'categories' || folderValue === 'menu-items') 
+      ? folderValue 
+      : 'menu-items';
 
     if (!file) {
       return NextResponse.json({ error: 'No image file provided' }, { status: 400 });
