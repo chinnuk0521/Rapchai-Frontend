@@ -24,7 +24,8 @@ export default function CustomerNavBar() {
     if (!isHydrated) return;
 
     // Only apply scroll behavior on home page
-    if (!isHomePage) {
+    // Always keep navbar visible on other pages and when mobile menu is open
+    if (!isHomePage || isMobileMenuOpen) {
       setIsVisible(true);
       return;
     }
@@ -49,7 +50,7 @@ export default function CustomerNavBar() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHomePage, isHydrated]);
+  }, [isHomePage, isHydrated, isMobileMenuOpen]);
 
   // Don't render until hydrated to prevent SSR mismatch
   if (!isHydrated) {
@@ -98,8 +99,9 @@ export default function CustomerNavBar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-[var(--rc-creamy-beige)] transition-colors"
+          className="md:hidden w-12 h-12 flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-[var(--rc-creamy-beige)] transition-colors z-50 relative"
           aria-label="Toggle menu"
+          aria-expanded={isMobileMenuOpen}
         >
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
@@ -109,7 +111,7 @@ export default function CustomerNavBar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[var(--rc-creamy-beige)] border-t-2 border-[var(--rc-orange)]/20 shadow-lg z-50">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[var(--rc-creamy-beige)] border-t-2 border-[var(--rc-orange)]/20 shadow-lg z-50 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <nav className="container-px py-4 space-y-2">
             <Link 
               href="/menu" 
@@ -196,7 +198,7 @@ export default function CustomerNavBar() {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--rc-creamy-beige)]/95 border-b-2 border-[var(--rc-orange)]/20 shadow-lg transition-all duration-500 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
+        isVisible || isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
       }`}
     >
       <div className="w-full container-px flex h-16 items-center justify-between">
@@ -242,8 +244,9 @@ export default function CustomerNavBar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-[var(--rc-creamy-beige)] transition-colors"
+          className="md:hidden w-12 h-12 flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-[var(--rc-creamy-beige)] transition-colors z-50 relative"
           aria-label="Toggle menu"
+          aria-expanded={isMobileMenuOpen}
         >
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
@@ -253,7 +256,7 @@ export default function CustomerNavBar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[var(--rc-creamy-beige)] border-t-2 border-[var(--rc-orange)]/20 shadow-lg z-50">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[var(--rc-creamy-beige)] border-t-2 border-[var(--rc-orange)]/20 shadow-lg z-50 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <nav className="container-px py-4 space-y-2">
             <Link 
               href="/menu" 
