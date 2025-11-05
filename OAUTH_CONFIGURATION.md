@@ -21,7 +21,7 @@ The OAuth flow uses **two different redirect URLs** for different steps:
 6. Supabase processes OAuth tokens
    ↓
 7. Supabase → Frontend callback
-   URL: https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
+   URL: https://rapchai.vercel.app/auth/callback
    ↓
 8. Frontend processes tokens and redirects to /home
 ```
@@ -33,13 +33,13 @@ The OAuth flow uses **two different redirect URLs** for different steps:
 1. Go to **Supabase Dashboard → Authentication → URL Configuration**
 2. Set **Site URL** to:
    ```
-   https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
+   https://rapchai.vercel.app
    ```
    (NOT `/auth/callback` - just the base URL)
 
 3. In **Redirect URLs**, add:
    ```
-   https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
+   https://rapchai.vercel.app/auth/callback
    ```
 
 **Why this matters:**
@@ -78,12 +78,12 @@ https://ukdrlbhorhsaupkskfvy.supabase.co/auth/v1/callback
 
 **Site URL:**
 ```
-https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
+https://rapchai.vercel.app
 ```
 
 **Redirect URLs:**
 ```
-https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
+https://rapchai.vercel.app/auth/callback
 ```
 
 **Why this URL?**
@@ -100,7 +100,7 @@ https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callbac
 | Configuration | URL | Purpose |
 |--------------|-----|---------|
 | **Google Cloud Console** | `https://ukdrlbhorhsaupkskfvy.supabase.co/auth/v1/callback` | Google → Supabase (after authentication) |
-| **Supabase Dashboard** | `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback` | Supabase → Frontend (after processing) |
+| **Supabase Dashboard** | `https://rapchai.vercel.app/auth/callback` | Supabase → Frontend (after processing) |
 
 ## ✅ Verification Checklist
 
@@ -117,7 +117,7 @@ Both URLs are needed because:
 2. **Supabase → Frontend**: Supabase needs to know where to redirect after processing (Your frontend handles this)
 
 The code automatically uses `window.location.origin` to detect the current domain for production deployment:
-- Production: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app`
+- Production: `https://rapchai.vercel.app`
 
 ## 🔍 Testing
 

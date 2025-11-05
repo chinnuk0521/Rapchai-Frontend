@@ -15,15 +15,15 @@ The issue is **Supabase's Site URL configuration**. Supabase uses the Site URL f
 3. Go to **Authentication → URL Configuration**
 4. Set **Site URL** to:
    ```
-   https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
+   https://rapchai.vercel.app
    ```
-   **NOT** `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback` ❌
+   **NOT** `https://rapchai.vercel.app/auth/callback` ❌
    
-   Just the base URL: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app` ✅
+   Just the base URL: `https://rapchai.vercel.app` ✅
 
 5. In **Redirect URLs**, add:
    ```
-   https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
+   https://rapchai.vercel.app/auth/callback
    ```
 
 6. Click **Save**
@@ -35,9 +35,9 @@ After saving, check the console logs when clicking "Continue with Google":
 **Expected Console Output:**
 ```
 🔍 URL Detection:
-   Hostname: rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
-   Origin: https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
-   Redirect URL: https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
+   Hostname: rapchai.vercel.app
+   Origin: https://rapchai.vercel.app
+   Redirect URL: https://rapchai.vercel.app/auth/callback
    Is Vercel: true
 ```
 
@@ -58,7 +58,7 @@ After saving, check the console logs when clicking "Continue with Google":
 
 The code now **hardcodes the production Vercel URL** in `CustomerAuthModal.tsx`:
 ```typescript
-const PRODUCTION_URL = 'https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app';
+const PRODUCTION_URL = 'https://rapchai.vercel.app';
 const redirectUrl = `${PRODUCTION_URL}/auth/callback`;
 ```
 
@@ -71,8 +71,8 @@ This ensures that:
 
 | Setting | Value |
 |---------|-------|
-| **Site URL** | `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app` |
-| **Redirect URLs** | `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback` |
+| **Site URL** | `https://rapchai.vercel.app` |
+| **Redirect URLs** | `https://rapchai.vercel.app/auth/callback` |
 
 ## 🧪 Testing
 
@@ -82,7 +82,7 @@ This ensures that:
 4. Check browser console - you should see the Vercel URL
 5. After Google authentication, you should be redirected to:
    ```
-   https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback#access_token=...
+   https://rapchai.vercel.app/auth/callback#access_token=...
    ```
 
 ## 🐛 If Still Not Working
@@ -95,8 +95,8 @@ This ensures that:
 ## 📝 Quick Checklist
 
 - [x] Code uses hardcoded production URL (already fixed)
-- [ ] **CRITICAL**: Supabase Redirect URLs must include: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback`
-- [ ] Supabase Site URL should be set to: `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app` (optional, but recommended)
+- [ ] **CRITICAL**: Supabase Redirect URLs must include: `https://rapchai.vercel.app/auth/callback`
+- [ ] Supabase Site URL should be set to: `https://rapchai.vercel.app` (optional, but recommended)
 - [ ] Browser cache cleared
 - [ ] Supabase changes saved
 

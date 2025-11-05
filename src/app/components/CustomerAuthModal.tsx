@@ -59,7 +59,7 @@ export default function CustomerAuthModal({
     try {
       // CRITICAL: Always use production Vercel URL for redirect
       // This overrides Supabase's Site URL setting and ensures correct redirect
-      const PRODUCTION_URL = 'https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app';
+      const PRODUCTION_URL = 'https://rapchai.vercel.app';
       
       // Get current origin for logging
       const currentOrigin = window.location.origin;

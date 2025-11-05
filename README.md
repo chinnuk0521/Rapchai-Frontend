@@ -219,7 +219,7 @@ Once your project is created:
 2. Enable **Google** provider
 3. Add Google OAuth credentials (Client ID & Secret)
 4. Add authorized redirect URLs in Supabase Dashboard:
-   - `https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback`
+   - `https://rapchai.vercel.app/auth/callback`
    - **Note:** The code automatically uses `window.location.origin` for production deployment
 
 ### Step 4: Configure Image Storage
