@@ -107,7 +107,7 @@ export default function MenuClient() {
       <>
         <div className="space-y-8">
           {/* Category Cards Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {categories
               .filter((cat) => cat.isActive === true) // Only show active categories
               .map((category) => {
@@ -128,7 +128,7 @@ export default function MenuClient() {
                     className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white to-[var(--rc-creamy-beige)] shadow-xl ring-2 ring-[var(--rc-orange)]/20 hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2"
                   >
                     {/* Category Image */}
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-40 md:h-48 overflow-hidden">
                       <RobustImage
                         src={category.imageUrl || getImageForCategory(category.name)}
                         alt={category.name}
@@ -142,11 +142,11 @@ export default function MenuClient() {
                     </div>
                     
                     {/* Category Info */}
-                    <div className="p-6 text-center">
-                      <h3 className="font-black text-[var(--rc-espresso-brown)] text-lg mb-2 group-hover:text-[var(--rc-orange)] transition-colors">
+                    <div className="p-4 md:p-6 text-center">
+                      <h3 className="font-black text-[var(--rc-espresso-brown)] text-base md:text-lg mb-2 group-hover:text-[var(--rc-orange)] transition-colors">
                         {category.name}
                       </h3>
-                      <p className="text-sm text-[var(--rc-text-secondary)] font-semibold">
+                      <p className="text-xs md:text-sm text-[var(--rc-text-secondary)] font-semibold">
                         {itemCount} {itemCount === 1 ? 'item' : 'items'}
                       </p>
                     </div>
@@ -186,22 +186,23 @@ export default function MenuClient() {
         {/* Back Button */}
         <button
           onClick={() => router.push('/menu')}
-          className="flex items-center gap-2 text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-semibold mb-4"
+          className="flex items-center gap-2 text-sm md:text-base text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors font-semibold mb-4 md:mb-6 px-3 py-2 md:px-0 md:py-0 rounded-lg hover:bg-[var(--rc-orange)]/10 md:hover:bg-transparent"
+          aria-label="Back to categories"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Back to Categories
+          <span className="font-bold">Back to Categories</span>
         </button>
 
         {/* Filter Bar - ALL | Veg | Non-Veg */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold text-[var(--rc-text-secondary)]">Filter:</span>
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+            <span className="text-xs md:text-sm font-semibold text-[var(--rc-text-secondary)]">Filter:</span>
+            <div className="flex items-center gap-2 flex-wrap">
               <button 
                 onClick={() => setVegOnly(null)} 
-                className={`px-6 py-3 rounded-xl border-2 transition-all duration-300 font-bold text-sm ${
+                className={`px-4 md:px-6 py-2 md:py-3 rounded-xl border-2 transition-all duration-300 font-bold text-xs md:text-sm min-h-[44px] ${
                   vegOnly===null 
                     ? "bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white border-transparent shadow-lg" 
                     : "bg-white text-[var(--rc-espresso-brown)] border-[var(--rc-espresso-brown)]/20 hover:border-[var(--rc-orange)] hover:bg-[var(--rc-orange)]/5"
@@ -211,7 +212,7 @@ export default function MenuClient() {
               </button>
               <button 
                 onClick={() => setVegOnly(true)} 
-                className={`px-6 py-3 rounded-xl border-2 transition-all duration-300 font-bold text-sm ${
+                className={`px-4 md:px-6 py-2 md:py-3 rounded-xl border-2 transition-all duration-300 font-bold text-xs md:text-sm min-h-[44px] ${
                   vegOnly===true 
                     ? "bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white border-transparent shadow-lg" 
                     : "bg-white text-[var(--rc-espresso-brown)] border-[var(--rc-espresso-brown)]/20 hover:border-[var(--rc-orange)] hover:bg-[var(--rc-orange)]/5"
@@ -221,7 +222,7 @@ export default function MenuClient() {
               </button>
               <button 
                 onClick={() => setVegOnly(false)} 
-                className={`px-6 py-3 rounded-xl border-2 transition-all duration-300 font-bold text-sm ${
+                className={`px-4 md:px-6 py-2 md:py-3 rounded-xl border-2 transition-all duration-300 font-bold text-xs md:text-sm min-h-[44px] ${
                   vegOnly===false 
                     ? "bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white border-transparent shadow-lg" 
                     : "bg-white text-[var(--rc-espresso-brown)] border-[var(--rc-espresso-brown)]/20 hover:border-[var(--rc-orange)] hover:bg-[var(--rc-orange)]/5"
@@ -233,16 +234,16 @@ export default function MenuClient() {
           </div>
 
           {/* Results Count */}
-          <div className="text-sm font-semibold text-[var(--rc-orange)] bg-[var(--rc-orange)]/10 px-4 py-2 rounded-xl">
+          <div className="text-xs md:text-sm font-semibold text-[var(--rc-orange)] bg-[var(--rc-orange)]/10 px-3 md:px-4 py-2 md:py-2.5 rounded-xl whitespace-nowrap">
             {filtered.length} {filtered.length === 1 ? 'item' : 'items'} found
           </div>
         </div>
 
         {/* Menu Items Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
           {filtered.map((it) => (
-            <div key={it.id} className="group rounded-3xl bg-gradient-to-br from-white to-[var(--rc-creamy-beige)] shadow-2xl ring-2 ring-[var(--rc-orange)]/20 overflow-hidden hover:shadow-3xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2">
-              <div className="relative h-64 overflow-hidden">
+            <div key={it.id} className="group rounded-2xl md:rounded-3xl bg-gradient-to-br from-white to-[var(--rc-creamy-beige)] shadow-lg md:shadow-2xl ring-2 ring-[var(--rc-orange)]/20 overflow-hidden hover:shadow-xl md:hover:shadow-3xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-1 md:hover:-translate-y-2">
+              <div className="relative h-48 md:h-56 lg:h-64 overflow-hidden">
                 <RobustImage
                   src={it.imageUrl || getImageForCategory(typeof it.category === 'string' ? it.category : it.category?.name)}
                   alt={it.name || it.title}
@@ -257,21 +258,21 @@ export default function MenuClient() {
                   unoptimized={false}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute top-4 right-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                <div className="absolute top-3 md:top-4 right-3 md:right-4">
+                  <span className={`px-2 md:px-3 py-1 md:py-1.5 rounded-full text-xs md:text-sm font-bold ${
                     it.veg ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                   }`}>
                     {it.veg ? 'VEG' : 'NON-VEG'}
                   </span>
                 </div>
               </div>
-              <div className="p-8">
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="font-black text-[var(--rc-espresso-brown)] text-xl leading-tight">{it.name || it.title}</h3>
-                  <div className="text-2xl font-black text-[var(--rc-orange)] ml-4">₹{it.price}</div>
+              <div className="p-4 md:p-6 lg:p-8">
+                <div className="flex items-start justify-between mb-3 md:mb-4 gap-2">
+                  <h3 className="font-black text-[var(--rc-espresso-brown)] text-base md:text-lg lg:text-xl leading-tight flex-1">{it.name || it.title}</h3>
+                  <div className="text-xl md:text-2xl font-black text-[var(--rc-orange)] ml-2 md:ml-4 flex-shrink-0">₹{it.price}</div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-[var(--rc-text-secondary)] bg-[var(--rc-creamy-beige)] px-3 py-1 rounded-full">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3">
+                  <span className="text-xs md:text-sm font-semibold text-[var(--rc-text-secondary)] bg-[var(--rc-creamy-beige)] px-3 py-1.5 rounded-full">
                     {typeof it.category === 'string' ? it.category : it.category?.name}
                   </span>
                   <AddToCartButton item={it} />
@@ -340,13 +341,14 @@ function AddToCartButton({ item }: { item: any }) {
     <button 
       onClick={handleAddToCart}
       disabled={isAdding || !isAvailable}
-      className={`transition-colors font-bold text-sm group-hover:scale-110 transform duration-300 disabled:opacity-50 ${
+      className={`px-4 md:px-6 py-2 md:py-2.5 rounded-lg md:rounded-xl font-bold text-xs md:text-sm transition-all duration-300 disabled:opacity-50 min-h-[44px] ${
         isAvailable 
-          ? 'text-[var(--rc-orange)] hover:text-[var(--rc-espresso-brown)]' 
-          : 'text-gray-400 cursor-not-allowed'
+          ? 'bg-[var(--rc-orange)] text-white hover:bg-[var(--rc-espresso-brown)] hover:scale-105 shadow-md' 
+          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
       }`}
+      aria-label={`${!isAvailable ? 'Unavailable' : isAdding ? 'Added to cart' : 'Add to cart'}`}
     >
-      {!isAvailable ? 'Unavailable' : isAdding ? 'Added!' : 'Add to Cart →'}
+      {!isAvailable ? 'Unavailable' : isAdding ? 'Added!' : 'Add to Cart'}
     </button>
   );
 }
