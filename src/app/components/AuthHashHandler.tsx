@@ -48,6 +48,11 @@ export default function AuthHashHandler() {
         }
 
         hasProcessedRef.current = true;
+        
+        // Visual console log
+        console.log('%c🚨 OAuth Hash Detected!', 'color: #FF6B35; font-size: 16px; font-weight: bold; background: #fff3e0; padding: 10px; border-radius: 5px;');
+        console.log('%c═══════════════════════════════════════════════════════════', 'color: #FF6B35;');
+        
         hashHandlerLogger.group('=== Hash Handler: OAuth Hash Detected ===');
         hashHandlerLogger.info('Detected OAuth hash fragments on page', {
           pathname,
@@ -62,22 +67,31 @@ export default function AuthHashHandler() {
           hasError: !!error,
           hashLength: hash.length,
         });
-        hashHandlerLogger.info('Redirecting to /auth/callback for processing');
-        hashHandlerLogger.navigation(pathname, '/auth/callback', 'hash-redirect');
         
         // Use window.location.replace to preserve hash fragment during redirect
         // This ensures the hash is preserved when redirecting to /auth/callback
         const redirectUrl = `/auth/callback${hash}`;
+        
+        console.log('%c📍 Current Page:', 'color: #2196F3; font-weight: bold;', pathname);
+        console.log('%c🔄 Redirecting to:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+        console.log('%c⏱️  Redirecting in 100ms...', 'color: #FF9800; font-style: italic;');
+        
+        hashHandlerLogger.info('Redirecting to /auth/callback for processing');
+        hashHandlerLogger.navigation(pathname, '/auth/callback', 'hash-redirect');
         hashHandlerLogger.info('Executing redirect', { redirectUrl });
         
-        // Redirect immediately (no delay needed)
-        window.location.replace(redirectUrl);
+        // Small delay to ensure logs are visible
+        setTimeout(() => {
+          console.log('%c✅ Executing redirect now...', 'color: #4CAF50; font-weight: bold;');
+          window.location.replace(redirectUrl);
+        }, 100);
         
         hashHandlerLogger.groupEnd();
       }
     };
 
     // Check immediately on mount
+    console.log('%c🔍 Hash Handler Initialized', 'color: #2196F3; font-size: 14px; font-weight: bold;');
     hashHandlerLogger.info('Hash handler mounted, checking for hash fragments', { pathname });
     checkAndHandleHash();
 
