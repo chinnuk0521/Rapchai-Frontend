@@ -66,6 +66,8 @@ export default function AppInitializer() {
       if (accessToken) {
         console.log('%c⚠️ OAuth hash detected on', 'color: orange; font-weight: bold;', pathname);
         console.log('%c   → Should redirect to /auth/callback', 'color: #666;');
+        console.log('%c   ⚠️  If you see this, the hash handler should catch it!', 'color: #FF9800; font-weight: bold;');
+        console.log('%c   ⚠️  If it doesn\'t redirect, check Supabase Site URL configuration', 'color: #FF9800; font-weight: bold;');
       }
       
       if (error) {

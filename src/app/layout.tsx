@@ -103,6 +103,38 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Pre-hydration hash handler - catches hash fragments before React loads */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Check for OAuth hash fragments immediately (before React loads)
+                var hash = window.location.hash;
+                if (hash && hash.length > 10) {
+                  try {
+                    var hashParams = new URLSearchParams(hash.substring(1));
+                    var accessToken = hashParams.get('access_token');
+                    var error = hashParams.get('error');
+                    
+                    if (accessToken || error) {
+                      var pathname = window.location.pathname;
+                      if (pathname !== '/auth/callback') {
+                        console.log('%c🚨 Pre-hydration: OAuth hash detected!', 'color: #FF6B35; font-size: 14px; font-weight: bold;');
+                        console.log('%c   Current path:', 'color: #666;', pathname);
+                        console.log('%c   Redirecting to /auth/callback...', 'color: #4CAF50; font-weight: bold;');
+                        window.location.replace('/auth/callback' + hash);
+                      }
+                    }
+                  } catch (e) {
+                    console.error('Pre-hydration hash handler error:', e);
+                  }
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body 
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
         suppressHydrationWarning={true}

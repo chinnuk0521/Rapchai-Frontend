@@ -26,6 +26,30 @@ The OAuth flow uses **two different redirect URLs** for different steps:
 8. Frontend processes tokens and redirects to /home
 ```
 
+## ⚠️ IMPORTANT: Supabase Site URL Configuration
+
+**The most common issue:** If Supabase redirects to root (`localhost:3000/#access_token=...`) instead of `/auth/callback`, check your Supabase **Site URL** configuration:
+
+1. Go to **Supabase Dashboard → Authentication → URL Configuration**
+2. Set **Site URL** to:
+   ```
+   https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app
+   ```
+   (NOT `/auth/callback` - just the base URL)
+
+3. In **Redirect URLs**, add:
+   ```
+   https://rapchai-frontend-8om926b4t-chinnuk0521s-projects.vercel.app/auth/callback
+   http://localhost:3000/auth/callback
+   ```
+
+**Why this matters:**
+- If Site URL is wrong, Supabase might redirect to root with hash fragments
+- The code has a handler that catches this and redirects to `/auth/callback`
+- But it's better to configure Supabase correctly
+
+---
+
 ## 🔧 URL Configuration
 
 ### Step 1: Google Cloud Console Configuration

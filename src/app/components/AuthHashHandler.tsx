@@ -25,6 +25,15 @@ export default function AuthHashHandler() {
 
       // Check if there's a hash fragment with OAuth tokens
       const hash = window.location.hash;
+      
+      // Enhanced logging
+      console.log('%c🔍 Hash Check:', 'color: #2196F3; font-weight: bold;', {
+        pathname,
+        hasHash: !!hash,
+        hashLength: hash?.length || 0,
+        fullHash: hash?.substring(0, 100) + '...' || 'None',
+      });
+      
       hashHandlerLogger.debug('Checking for hash fragments', {
         pathname,
         hasHash: !!hash,
@@ -32,12 +41,19 @@ export default function AuthHashHandler() {
       });
 
       if (!hash || hash.length < 10) {
+        console.log('%c   → No hash or hash too short, skipping', 'color: #666;');
         return; // No hash or too short to be OAuth data
       }
 
       const hashParams = new URLSearchParams(hash.substring(1));
       const accessToken = hashParams.get('access_token');
       const error = hashParams.get('error');
+      
+      console.log('%c🔍 Hash Analysis:', 'color: #2196F3; font-weight: bold;', {
+        hasAccessToken: !!accessToken,
+        hasError: !!error,
+        hashLength: hash.length,
+      });
 
       // If we have OAuth data in the hash, redirect to callback handler
       if (accessToken || error) {
@@ -92,8 +108,20 @@ export default function AuthHashHandler() {
 
     // Check immediately on mount
     console.log('%c🔍 Hash Handler Initialized', 'color: #2196F3; font-size: 14px; font-weight: bold;');
+    console.log('%c   Pathname:', 'color: #666;', pathname);
+    console.log('%c   Current Hash:', 'color: #666;', window.location.hash || 'None');
     hashHandlerLogger.info('Hash handler mounted, checking for hash fragments', { pathname });
+    
+    // Immediate check (no delay)
     checkAndHandleHash();
+    
+    // Also check after a very short delay in case React hasn't fully hydrated
+    setTimeout(() => {
+      if (!hasProcessedRef.current) {
+        console.log('%c🔍 Hash Handler: Re-checking after hydration...', 'color: #2196F3; font-size: 12px;');
+        checkAndHandleHash();
+      }
+    }, 50);
 
     // Also listen for hash changes (in case hash appears after component mounts)
     const handleHashChange = () => {
