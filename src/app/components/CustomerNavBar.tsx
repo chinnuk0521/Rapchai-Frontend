@@ -101,7 +101,7 @@ export default function CustomerNavBar() {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="md:hidden w-12 h-12 flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-[var(--rc-creamy-beige)] transition-colors z-50 relative"
           aria-label="Toggle menu"
-          aria-expanded={isMobileMenuOpen}
+          aria-expanded={isMobileMenuOpen ? 'true' : 'false'}
         >
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
@@ -246,7 +246,7 @@ export default function CustomerNavBar() {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="md:hidden w-12 h-12 flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-[var(--rc-creamy-beige)] transition-colors z-50 relative"
           aria-label="Toggle menu"
-          aria-expanded={isMobileMenuOpen}
+          aria-expanded={isMobileMenuOpen ? 'true' : 'false'}
         >
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
           <span className={`w-6 h-0.5 bg-[var(--rc-espresso-brown)] transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
