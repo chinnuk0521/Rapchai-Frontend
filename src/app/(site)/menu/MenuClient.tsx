@@ -152,9 +152,9 @@ export default function MenuClient() {
                     </div>
 
                     {/* Hover Arrow Indicator */}
-                    <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="w-10 h-10 rounded-full bg-[var(--rc-orange)] flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="absolute bottom-4 md:bottom-6 right-4 md:right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[var(--rc-orange)] flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                        <svg className="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
