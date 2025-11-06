@@ -63,15 +63,19 @@ export function useMenuData() {
       if (itemsResponse.status === 'fulfilled') {
         itemsResponseData = itemsResponse.value;
       } else {
-        console.error('[useMenuData] Failed to fetch items:', itemsResponse.reason);
-        errors.push(`Failed to load menu items: ${itemsResponse.reason?.message || 'Unknown error'}`);
+        const error = itemsResponse.reason;
+        const errorMessage = error?.message || error?.response?.message || 'Unknown error';
+        console.error('[useMenuData] Failed to fetch items:', error);
+        errors.push(`Failed to load menu items: ${errorMessage}`);
       }
 
       if (categoriesResponse.status === 'fulfilled') {
         categoriesResponseData = categoriesResponse.value;
       } else {
-        console.error('[useMenuData] Failed to fetch categories:', categoriesResponse.reason);
-        errors.push(`Failed to load categories: ${categoriesResponse.reason?.message || 'Unknown error'}`);
+        const error = categoriesResponse.reason;
+        const errorMessage = error?.message || error?.response?.message || 'Unknown error';
+        console.error('[useMenuData] Failed to fetch categories:', error);
+        errors.push(`Failed to load categories: ${errorMessage}`);
       }
 
       // Log responses for debugging
