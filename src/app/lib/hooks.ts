@@ -63,8 +63,15 @@ export function useMenuData() {
 
       // Extract data from API response
       // Backend returns: { items: [...], pagination: {...} } or { categories: [...], pagination: {...} }
-      const itemsData = (itemsResponse as any)?.items || [];
-      const categoriesData = (categoriesResponse as any)?.categories || [];
+      // Also support legacy formats: { data: [...] } or raw arrays for backward compatibility
+      const itemsData =
+        (itemsResponse as any)?.items ??
+        (itemsResponse as any)?.data ??
+        (Array.isArray(itemsResponse) ? itemsResponse : []);
+      const categoriesData =
+        (categoriesResponse as any)?.categories ??
+        (categoriesResponse as any)?.data ??
+        (Array.isArray(categoriesResponse) ? categoriesResponse : []);
 
       // Log extracted data for debugging
       if (typeof window !== 'undefined') {
@@ -78,39 +85,16 @@ export function useMenuData() {
         ...item, // Preserve all original fields from database
         // Computed/transformed fields for frontend compatibility
         price: item.pricePaise ? item.pricePaise / 100 : (item.price || 0), // Convert paise to rupees
-        veg: item.isVeg !== undefined ? item.isVeg : (item.veg !== undefined ? item.veg : true), // Default to veg if not specified
-        available: item.isAvailable !== undefined ? item.isAvailable : (item.available !== undefined ? item.available : true), // Default to available if not specified
+        veg: item.isVeg ?? item.veg ?? true, // Default to veg if not specified
+        available: item.isAvailable ?? item.available ?? true, // Default to available if not specified
         title: item.name, // For backward compatibility
-        // Ensure all schema fields are present
-        id: item.id,
-        name: item.name,
-        description: item.description || null,
-        pricePaise: item.pricePaise || 0,
-        imageUrl: item.imageUrl || null,
-        isVeg: item.isVeg !== undefined ? item.isVeg : true,
-        isAvailable: item.isAvailable !== undefined ? item.isAvailable : true,
-        isActive: item.isActive !== undefined ? item.isActive : true,
-        calories: item.calories || null,
-        prepTime: item.prepTime || null,
-        categoryId: item.categoryId,
-        sortOrder: item.sortOrder || 0,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
       }));
 
       // Map all fields from Supabase schema: id, name, slug, description, imageUrl, isActive, sortOrder, createdAt, updatedAt
       const transformedCategories = (categoriesData || []).map((cat: any) => ({
         ...cat, // Preserve all original fields from database
-        // Ensure all schema fields are present
-        id: cat.id,
-        name: cat.name,
-        slug: cat.slug,
-        description: cat.description || null,
-        imageUrl: cat.imageUrl || null,
+        // Only set default for isActive if not specified
         isActive: cat.isActive !== undefined ? cat.isActive : true, // Default to active if not specified
-        sortOrder: cat.sortOrder || 0,
-        createdAt: cat.createdAt,
-        updatedAt: cat.updatedAt,
       }));
 
       if (typeof window !== 'undefined') {
