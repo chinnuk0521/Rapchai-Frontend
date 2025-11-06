@@ -57,12 +57,20 @@ export function useMenuData() {
       if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
         console.log('[useMenuData] Items response:', itemsResponse);
         console.log('[useMenuData] Categories response:', categoriesResponse);
+        console.log('[useMenuData] Items response keys:', Object.keys(itemsResponse || {}));
+        console.log('[useMenuData] Categories response keys:', Object.keys(categoriesResponse || {}));
       }
 
       // Extract data from API response
       // Backend returns: { items: [...], pagination: {...} } or { categories: [...], pagination: {...} }
       const itemsData = (itemsResponse as any)?.items || [];
       const categoriesData = (categoriesResponse as any)?.categories || [];
+
+      // Log extracted data for debugging
+      if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+        console.log('[useMenuData] Extracted itemsData:', itemsData.length, itemsData);
+        console.log('[useMenuData] Extracted categoriesData:', categoriesData.length, categoriesData);
+      }
 
       // Transform API data to frontend format
       // Map all fields from Supabase schema: id, name, description, pricePaise, imageUrl, isVeg, isAvailable, isActive, calories, prepTime, categoryId, sortOrder, createdAt, updatedAt

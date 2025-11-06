@@ -39,6 +39,13 @@ export default function MenuClient() {
   
   // Use API data only - no fallback to static data
   const items = menuItems;
+
+  // Debug logging
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    console.log('[MenuClient] Categories received:', categories.length, categories);
+    console.log('[MenuClient] Menu items received:', items.length, items);
+    console.log('[MenuClient] Loading state:', loading);
+  }
   
   // Handle category click - navigate to filtered view
   const handleCategoryClick = (category: Category) => {
