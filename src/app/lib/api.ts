@@ -2,12 +2,40 @@
 // In production: Use NEXT_PUBLIC_API_URL (your deployed backend URL)
 // In development: Use /api which gets rewritten via next.config.ts
 const getApiBaseUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    // Client-side: Use env var if set, otherwise use /api (for rewrites in dev)
-    return process.env.NEXT_PUBLIC_API_URL || '/api';
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  
+  if (!envUrl) {
+    // No env var set, use relative path for dev
+    return '/api';
   }
-  // Server-side: Always use env var or fallback to /api (will be rewritten)
-  return process.env.NEXT_PUBLIC_API_URL || '/api';
+  
+  let baseUrl: string;
+  
+  // If it's already a full URL (starts with http:// or https://), use it as is
+  if (envUrl.startsWith('http://') || envUrl.startsWith('https://')) {
+    baseUrl = envUrl;
+  }
+  // If it's a domain without protocol, add https://
+  else if (envUrl.includes('.') && !envUrl.startsWith('/')) {
+    baseUrl = `https://${envUrl}`;
+  }
+  // Otherwise, treat it as a relative path
+  else {
+    return envUrl;
+  }
+  
+  // For absolute URLs (production), ensure /api is included
+  // Backend routes all start with /api/ (e.g., /api/menu/items)
+  if (baseUrl.startsWith('http://') || baseUrl.startsWith('https://')) {
+    // Remove trailing slash if present
+    baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    // Append /api if not already present
+    if (!baseUrl.endsWith('/api')) {
+      baseUrl = `${baseUrl}/api`;
+    }
+  }
+  
+  return baseUrl;
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -37,7 +65,10 @@ async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+  // Ensure proper URL construction
+  const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${baseUrl}${path}`;
   
   const defaultHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
