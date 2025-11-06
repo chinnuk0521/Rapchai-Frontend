@@ -12,12 +12,12 @@ function MenuClientWrapper() {
 
 export default function MenuPage() {
   return (
-    <div className="py-12 bg-[var(--rc-creamy-beige)] min-h-screen">
-      <div className="w-[95%] mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <h1 className="text-4xl font-bold text-[var(--rc-espresso-brown)]">Menu</h1>
+    <div className="py-6 md:py-12 bg-[var(--rc-creamy-beige)] min-h-screen">
+      <div className="w-full container-px">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-[var(--rc-espresso-brown)]">Menu</h1>
         </div>
-        <p className="text-lg text-[var(--rc-text-secondary)] max-w-4xl font-medium mb-8 whitespace-nowrap">From our mini burgers and sandwiches to our specials, everything is freshly crafted with wholesome ingredients right in front of you.</p>
+        <p className="text-sm md:text-base lg:text-lg text-[var(--rc-text-secondary)] max-w-4xl font-medium mb-6 md:mb-8 leading-relaxed">From our mini burgers and sandwiches to our specials, everything is freshly crafted with wholesome ingredients right in front of you.</p>
         <Suspense fallback={
           <div className="flex items-center justify-center py-12">
             <div className="text-center">

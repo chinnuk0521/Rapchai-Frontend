@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCustomerAuth } from "../lib/customer-auth";
 import { supabase } from "../../lib/supabase";
+import { authModalLogger } from "../lib/logger";
 
 interface CustomerAuthModalProps {
   isOpen: boolean;
@@ -19,28 +20,162 @@ export default function CustomerAuthModal({
   const [isLoading, setIsLoading] = useState(false);
   const { isAuthenticated } = useCustomerAuth();
 
+  // Log modal state changes
+  useEffect(() => {
+    if (isOpen) {
+      authModalLogger.group('=== Auth Modal Opened ===');
+      authModalLogger.table('Modal State', {
+        isOpen,
+        isAuthenticated,
+        isLoading,
+        hasError: !!error,
+      });
+      authModalLogger.groupEnd();
+    } else {
+      authModalLogger.info('Auth Modal Closed');
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    authModalLogger.stateChange('isLoading', undefined, isLoading);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (error) {
+      authModalLogger.error('Error state set', { error });
+    }
+  }, [error]);
+
   const handleGoogleSignIn = async () => {
+    const startTime = Date.now();
+    authModalLogger.click('Continue with Google Button');
+    authModalLogger.info('Starting Google OAuth flow');
+    
+    authModalLogger.stateChange('error', error, null);
+    authModalLogger.stateChange('isLoading', isLoading, true);
     setError(null);
     setIsLoading(true);
 
     try {
+      // CRITICAL: Always use production Vercel URL for redirect
+      // This overrides Supabase's Site URL setting and ensures correct redirect
+      const PRODUCTION_URL = 'https://rapchai.vercel.app';
+      
+      // Get current origin for logging
+      const currentOrigin = window.location.origin;
+      const currentUrl = window.location.href;
+      const hostname = window.location.hostname;
+      
+      // ALWAYS use production URL for redirect, regardless of current origin
+      // This ensures Supabase redirects to Vercel even if Site URL is set to localhost
+      const redirectUrl = `${PRODUCTION_URL}/auth/callback`;
+      
+      // Log detailed information about the URL being used
+      console.log('%c🔍 URL Detection:', 'color: #2196F3; font-size: 14px; font-weight: bold;');
+      console.log('%c   Hostname:', 'color: #666; font-weight: bold;', hostname);
+      console.log('%c   Current Origin:', 'color: #666; font-weight: bold;', currentOrigin);
+      console.log('%c   Full URL:', 'color: #666; font-weight: bold;', currentUrl);
+      console.log('%c   Production URL (HARDCODED):', 'color: #4CAF50; font-weight: bold;', PRODUCTION_URL);
+      console.log('%c   Redirect URL (FORCED):', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+      console.log('%c   ⚠️  Using hardcoded production URL to override Supabase Site URL!', 'color: #FF9800; font-weight: bold; background: #fff3e0; padding: 5px;');
+      
+      // Explain OAuth flow in console
+      console.log('%c🔄 OAuth Flow Explanation', 'color: #2196F3; font-size: 14px; font-weight: bold;');
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
+      console.log('%c1️⃣  User clicks "Continue with Google"', 'color: #4CAF50; font-weight: bold;');
+      console.log('%c2️⃣  Frontend → Supabase (redirects to Google)', 'color: #4CAF50; font-weight: bold;');
+      console.log('%c3️⃣  Google authenticates → Supabase callback:', 'color: #4CAF50; font-weight: bold;');
+      console.log('   ', 'https://ukdrlbhorhsaupkskfvy.supabase.co/auth/v1/callback');
+      console.log('%c4️⃣  Supabase processes → Frontend callback:', 'color: #4CAF50; font-weight: bold;');
+      console.log('   ', redirectUrl);
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
+      console.log('%c📋 URL Configuration:', 'color: #FF9800; font-weight: bold;');
+      console.log('%c   Current Origin:', 'color: #666; font-weight: bold;', currentOrigin);
+      console.log('%c   Current URL:', 'color: #666; font-weight: bold;', currentUrl);
+      console.log('%c   Redirect URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+      console.log('%c   Google Cloud Console:', 'color: #666; font-weight: bold;');
+      console.log('   ', 'https://ukdrlbhorhsaupkskfvy.supabase.co/auth/v1/callback');
+      console.log('%c   Supabase Dashboard:', 'color: #666; font-weight: bold;');
+      console.log('   ', redirectUrl);
+      console.log('%c═══════════════════════════════════════════════════════════', 'color: #666;');
+      console.log('%c⚠️  IMPORTANT: Make sure Supabase Site URL matches this redirect URL!', 'color: #FF9800; font-weight: bold; background: #fff3e0; padding: 5px;');
+      
+      authModalLogger.table('OAuth Configuration', {
+        provider: 'google',
+        redirectUrl,
+        currentOrigin,
+        hostname,
+        currentUrl,
+        access_type: 'offline',
+        prompt: 'consent',
+      });
+      
+      // Log the exact URL being sent to Supabase
+      console.log('%c📤 Sending to Supabase:', 'color: #9C27B0; font-size: 14px; font-weight: bold;');
+      console.log('%c   redirectTo:', 'color: #666; font-weight: bold;', redirectUrl);
+      
+      // Always log that we're using the hardcoded production URL
+      console.log('%c✅ Using HARDCODED Production URL:', 'color: #4CAF50; font-size: 14px; font-weight: bold; background: #e8f5e9; padding: 10px;');
+      console.log('%c   Redirect URL:', 'color: #4CAF50; font-weight: bold;', redirectUrl);
+      console.log('%c   ⚠️  This will override Supabase Site URL setting!', 'color: #FF9800; font-weight: bold;');
+      console.log('%c   📝 Make sure this URL is in Supabase Redirect URLs list!', 'color: #2196F3; font-weight: bold;');
+      
+      if (currentOrigin.includes('localhost')) {
+        console.warn('%c⚠️  NOTE: You are on localhost, but redirect will go to production Vercel URL', 'color: #FF9800; font-weight: bold;');
+      }
+
+      const oauthStartTime = Date.now();
       const { data, error: signInError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
 
+      const oauthTime = Date.now() - oauthStartTime;
+      authModalLogger.table('OAuth Initiation Result', {
+        success: !signInError,
+        hasData: !!data,
+        hasError: !!signInError,
+        error: signInError?.message || 'None',
+        oauthTime: `${oauthTime}ms`,
+      });
+
       if (signInError) {
+        authModalLogger.error('Google OAuth initiation failed', signInError);
+        authModalLogger.stateChange('error', null, signInError.message);
         setError(signInError.message || "Google sign in failed. Please try again.");
+        authModalLogger.stateChange('isLoading', true, false);
         setIsLoading(false);
+      } else {
+        authModalLogger.info('OAuth flow initiated successfully, redirecting to Google');
+        authModalLogger.info('Note: User will be redirected away from the page');
+        // Note: If successful, the OAuth flow will redirect away from the page
+        // The callback will handle the redirect back to the app
       }
-      // Note: If successful, the OAuth flow will redirect away from the page
-      // The callback will handle the redirect back to the app
     } catch (err: any) {
+      const totalTime = Date.now() - startTime;
+      authModalLogger.error('Exception during Google OAuth initiation', err);
+      authModalLogger.table('Exception Details', {
+        error: err.message || 'Unknown error',
+        stack: err.stack || 'No stack trace',
+        totalTime: `${totalTime}ms`,
+      });
+      authModalLogger.stateChange('error', null, err.message);
       setError(err.message || "An error occurred. Please try again.");
+      authModalLogger.stateChange('isLoading', true, false);
       setIsLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    authModalLogger.click('Close Modal Button (X)');
+    authModalLogger.info('Closing auth modal');
+    onClose();
   };
 
 
@@ -55,7 +190,7 @@ export default function CustomerAuthModal({
             Sign In with Google
           </h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-white hover:text-gray-200 transition-colors text-2xl font-bold"
             aria-label="Close"
           >

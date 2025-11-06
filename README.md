@@ -46,25 +46,20 @@ cp src/env.example .env.local
 
 4. **Configure `.env.local`:**
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_API_URL=https://your-backend-url.com/api
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ## 🏃 Running the Application
 
-### Development Mode
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:3000`
-
 ### Production Build
 ```bash
 npm run build
 npm start
 ```
+
+The application will be available at your Vercel deployment URL
 
 ## 📁 Project Structure
 
@@ -223,9 +218,9 @@ Once your project is created:
 1. Go to **Authentication** → **Providers**
 2. Enable **Google** provider
 3. Add Google OAuth credentials (Client ID & Secret)
-4. Add authorized redirect URLs:
-   - `http://localhost:3000` (development)
-   - `https://your-domain.com` (production)
+4. Add authorized redirect URLs in Supabase Dashboard:
+   - `https://rapchai.vercel.app/auth/callback`
+   - **Note:** The code automatically uses `window.location.origin` for production deployment
 
 ### Step 4: Configure Image Storage
 

@@ -75,31 +75,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // Use the API utility to properly handle backend URL
+      const { authApi } = await import('./services');
+      
+      const response = await authApi.login({ email, password });
 
-      // Check if response is ok before parsing JSON
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Login failed:', response.status, errorText);
-        return false;
-      }
-
-      const data = await response.json();
-
-      if (data.accessToken) {
-        setToken(data.accessToken);
-        setUser(data.user);
+      if (response.accessToken) {
+        setToken(response.accessToken);
+        setUser(response.user);
         
         // Store in localStorage (only after hydration)
         if (isHydrated) {
-          localStorage.setItem('adminToken', data.accessToken);
-          localStorage.setItem('adminUser', JSON.stringify(data.user));
+          localStorage.setItem('adminToken', response.accessToken);
+          localStorage.setItem('adminUser', JSON.stringify(response.user));
         }
         
         return true;
@@ -108,6 +96,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false;
     } catch (error) {
       console.error('Login error:', error);
+      // If backend is down, show a more helpful error message
+      if (error && typeof error === 'object' && 'statusCode' in error) {
+        const apiError = error as { statusCode: number; message?: string };
+        if (apiError.statusCode === 405 || apiError.statusCode >= 500) {
+          console.error('Backend server is not responding. Please check if the backend is running.');
+        }
+      }
       return false;
     }
   };

@@ -5,24 +5,66 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useCustomerAuth } from "../../lib/customer-auth";
 import CustomerAuthModal from "../../components/CustomerAuthModal";
+import { onboardingLogger } from "../../lib/logger";
 
 export default function OnboardingPage() {
   const router = useRouter();
   const { customer, isAuthenticated, isLoading } = useCustomerAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  // Log page mount
+  useEffect(() => {
+    onboardingLogger.group('=== Onboarding Page Mounted ===');
+    onboardingLogger.table('Initial State', {
+      isAuthenticated,
+      hasCustomer: !!customer,
+      isLoading,
+      customerId: customer?.id || 'None',
+      customerEmail: customer?.email || 'None',
+      isAuthModalOpen,
+    });
+    onboardingLogger.groupEnd();
+  }, []);
+
+  // Log state changes
+  useEffect(() => {
+    onboardingLogger.stateChange('isAuthModalOpen', undefined, isAuthModalOpen);
+  }, [isAuthModalOpen]);
+
+  useEffect(() => {
+    onboardingLogger.stateChange('isAuthenticated', undefined, isAuthenticated);
+    onboardingLogger.stateChange('customer', undefined, customer);
+    onboardingLogger.stateChange('isLoading', undefined, isLoading);
+  }, [isAuthenticated, customer, isLoading]);
+
   const handleCustomerSelect = () => {
+    onboardingLogger.click('Customer Option Button', {
+      isAuthenticated,
+      hasCustomer: !!customer,
+      currentModalState: isAuthModalOpen,
+    });
+
     // Check if customer is authenticated
     if (isAuthenticated && customer) {
+      onboardingLogger.info('Customer already authenticated, redirecting to /home', {
+        customerId: customer.id,
+        customerEmail: customer.email,
+      });
       // Already authenticated, go to customer app
+      onboardingLogger.navigation('/onboarding', '/home', 'push');
       router.push("/home");
     } else {
+      onboardingLogger.info('Customer not authenticated, opening auth modal');
       // Not authenticated, show auth modal
       setIsAuthModalOpen(true);
+      onboardingLogger.stateChange('isAuthModalOpen', false, true);
     }
   };
 
   const handleAdminSelect = () => {
+    onboardingLogger.click('Admin Option Button');
+    onboardingLogger.info('Admin option selected, redirecting to admin login');
+    onboardingLogger.navigation('/onboarding', '/admin/login', 'push');
     // Navigate to admin login
     router.push("/admin/login");
   };
@@ -32,17 +74,39 @@ export default function OnboardingPage() {
     if (!isLoading && isAuthenticated && customer) {
       // Only redirect if auth modal is not open (to avoid redirecting while user is signing in)
       if (!isAuthModalOpen) {
+        onboardingLogger.info('Auto-redirect: Customer authenticated, redirecting to /home', {
+          customerId: customer.id,
+          customerEmail: customer.email,
+        });
+        onboardingLogger.navigation('/onboarding', '/home', 'auto-redirect');
         router.push("/home");
+      } else {
+        onboardingLogger.debug('Auto-redirect skipped: Auth modal is open');
       }
     }
   }, [isAuthenticated, customer, isLoading, isAuthModalOpen, router]);
 
   const handleAuthSuccess = () => {
+    onboardingLogger.info('Auth success callback triggered');
+    onboardingLogger.stateChange('isAuthModalOpen', isAuthModalOpen, false);
     setIsAuthModalOpen(false);
     // Small delay to ensure auth state is updated
     setTimeout(() => {
+      onboardingLogger.info('Auth success: Redirecting to /home after delay');
+      onboardingLogger.navigation('/onboarding', '/home', 'auth-success');
       router.push("/home");
     }, 100);
+  };
+
+  const handleCloseModal = () => {
+    onboardingLogger.click('Close Auth Modal Button');
+    onboardingLogger.stateChange('isAuthModalOpen', isAuthModalOpen, false);
+    setIsAuthModalOpen(false);
+  };
+
+  const handleBackToHome = () => {
+    onboardingLogger.click('Back to Home Link');
+    onboardingLogger.navigation('/onboarding', '/', 'link');
   };
 
   return (
@@ -117,6 +181,7 @@ export default function OnboardingPage() {
         <div className="text-center mt-8">
           <Link
             href="/"
+            onClick={handleBackToHome}
             className="text-[var(--rc-text-secondary)] hover:text-[var(--rc-orange)] transition-colors font-medium"
           >
             ← Back to Home
@@ -127,7 +192,7 @@ export default function OnboardingPage() {
       {/* Customer Auth Modal */}
       <CustomerAuthModal
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={handleCloseModal}
         onAuthSuccess={handleAuthSuccess}
       />
     </div>
