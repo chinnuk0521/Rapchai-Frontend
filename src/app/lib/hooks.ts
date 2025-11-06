@@ -53,8 +53,8 @@ export function useMenuData() {
         menuApi.getCategories({ limit: 100 }), // Get all categories
       ]);
 
-      // Log responses for debugging (remove in production)
-      if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+      // Log responses for debugging
+      if (typeof window !== 'undefined') {
         console.log('[useMenuData] Items response:', itemsResponse);
         console.log('[useMenuData] Categories response:', categoriesResponse);
         console.log('[useMenuData] Items response keys:', Object.keys(itemsResponse || {}));
@@ -67,7 +67,7 @@ export function useMenuData() {
       const categoriesData = (categoriesResponse as any)?.categories || [];
 
       // Log extracted data for debugging
-      if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+      if (typeof window !== 'undefined') {
         console.log('[useMenuData] Extracted itemsData:', itemsData.length, itemsData);
         console.log('[useMenuData] Extracted categoriesData:', categoriesData.length, categoriesData);
       }
@@ -113,7 +113,7 @@ export function useMenuData() {
         updatedAt: cat.updatedAt,
       }));
 
-      if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+      if (typeof window !== 'undefined') {
         console.log('[useMenuData] Transformed items:', transformedItems.length);
         console.log('[useMenuData] Transformed categories:', transformedCategories.length);
       }

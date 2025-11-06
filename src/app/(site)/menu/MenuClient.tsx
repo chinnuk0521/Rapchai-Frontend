@@ -41,7 +41,7 @@ export default function MenuClient() {
   const items = menuItems;
 
   // Debug logging
-  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  if (typeof window !== 'undefined') {
     console.log('[MenuClient] Categories received:', categories.length, categories);
     console.log('[MenuClient] Menu items received:', items.length, items);
     console.log('[MenuClient] Loading state:', loading);
