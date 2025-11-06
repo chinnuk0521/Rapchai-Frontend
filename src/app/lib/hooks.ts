@@ -48,30 +48,55 @@ export function useMenuData() {
       // Import services dynamically to avoid circular dependencies
       const { menuApi } = await import('./services');
       
-      const [itemsResponse, categoriesResponse] = await Promise.all([
+      // Fetch items and categories separately to handle partial failures gracefully
+      // If one fails, we can still show the other
+      const [itemsResponse, categoriesResponse] = await Promise.allSettled([
         menuApi.getMenuItems({ limit: 100 }), // Get all items
         menuApi.getCategories({ limit: 100 }), // Get all categories
       ]);
 
+      // Handle responses - check if they succeeded or failed
+      let itemsResponseData: any = null;
+      let categoriesResponseData: any = null;
+      const errors: string[] = [];
+
+      if (itemsResponse.status === 'fulfilled') {
+        itemsResponseData = itemsResponse.value;
+      } else {
+        console.error('[useMenuData] Failed to fetch items:', itemsResponse.reason);
+        errors.push(`Failed to load menu items: ${itemsResponse.reason?.message || 'Unknown error'}`);
+      }
+
+      if (categoriesResponse.status === 'fulfilled') {
+        categoriesResponseData = categoriesResponse.value;
+      } else {
+        console.error('[useMenuData] Failed to fetch categories:', categoriesResponse.reason);
+        errors.push(`Failed to load categories: ${categoriesResponse.reason?.message || 'Unknown error'}`);
+      }
+
       // Log responses for debugging
       if (typeof window !== 'undefined') {
-        console.log('[useMenuData] Items response:', itemsResponse);
-        console.log('[useMenuData] Categories response:', categoriesResponse);
-        console.log('[useMenuData] Items response keys:', Object.keys(itemsResponse || {}));
-        console.log('[useMenuData] Categories response keys:', Object.keys(categoriesResponse || {}));
+        console.log('[useMenuData] Items response:', itemsResponseData);
+        console.log('[useMenuData] Categories response:', categoriesResponseData);
+        if (itemsResponseData) {
+          console.log('[useMenuData] Items response keys:', Object.keys(itemsResponseData || {}));
+        }
+        if (categoriesResponseData) {
+          console.log('[useMenuData] Categories response keys:', Object.keys(categoriesResponseData || {}));
+        }
       }
 
       // Extract data from API response
       // Backend returns: { items: [...], pagination: {...} } or { categories: [...], pagination: {...} }
       // Also support legacy formats: { data: [...] } or raw arrays for backward compatibility
       const itemsData =
-        (itemsResponse as any)?.items ??
-        (itemsResponse as any)?.data ??
-        (Array.isArray(itemsResponse) ? itemsResponse : []);
+        itemsResponseData?.items ??
+        itemsResponseData?.data ??
+        (Array.isArray(itemsResponseData) ? itemsResponseData : []);
       const categoriesData =
-        (categoriesResponse as any)?.categories ??
-        (categoriesResponse as any)?.data ??
-        (Array.isArray(categoriesResponse) ? categoriesResponse : []);
+        categoriesResponseData?.categories ??
+        categoriesResponseData?.data ??
+        (Array.isArray(categoriesResponseData) ? categoriesResponseData : []);
 
       // Log extracted data for debugging
       if (typeof window !== 'undefined') {
@@ -104,7 +129,18 @@ export function useMenuData() {
 
       setMenuItems(transformedItems);
       setCategories(transformedCategories);
-      setLoading({ isLoading: false, error: null });
+      
+      // Only show error if both requests failed
+      // If one succeeded, we can still show partial data
+      if (errors.length > 0 && transformedItems.length === 0 && transformedCategories.length === 0) {
+        setLoading({ isLoading: false, error: errors.join('; ') });
+      } else if (errors.length > 0) {
+        // Partial failure - show warning but still display available data
+        console.warn('[useMenuData] Partial data loaded with errors:', errors);
+        setLoading({ isLoading: false, error: null });
+      } else {
+        setLoading({ isLoading: false, error: null });
+      }
     } catch (error) {
       console.error('[useMenuData] Error fetching menu data:', error);
       const { useApiError } = await import('./api');
