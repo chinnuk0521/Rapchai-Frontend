@@ -53,30 +53,51 @@ export function useMenuData() {
         menuApi.getCategories({ limit: 100 }), // Get all categories
       ]);
 
+      // Log responses for debugging (remove in production)
+      if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+        console.log('[useMenuData] Items response:', itemsResponse);
+        console.log('[useMenuData] Categories response:', categoriesResponse);
+      }
+
+      // Handle different response formats
+      // Backend might return: { data: [...], pagination: {...} } or just [...]
+      const itemsData = (itemsResponse as any)?.data || (Array.isArray(itemsResponse) ? itemsResponse : []);
+      const categoriesData = (categoriesResponse as any)?.data || (Array.isArray(categoriesResponse) ? categoriesResponse : []);
+
       // Transform API data to frontend format
-      const transformedItems = (itemsResponse.data || []).map((item: any) => ({
+      const transformedItems = (itemsData || []).map((item: any) => ({
         ...item,
-        price: item.pricePaise / 100, // Convert paise to rupees
-        veg: item.isVeg,
-        available: item.isAvailable,
+        price: item.pricePaise ? item.pricePaise / 100 : (item.price || 0), // Convert paise to rupees
+        veg: item.isVeg !== undefined ? item.isVeg : item.veg,
+        available: item.isAvailable !== undefined ? item.isAvailable : item.available,
         title: item.name, // For backward compatibility
         imageUrl: item.imageUrl, // Ensure imageUrl is passed through
       }));
 
-      const transformedCategories = (categoriesResponse.data || []).map((cat: any) => ({
+      const transformedCategories = (categoriesData || []).map((cat: any) => ({
         ...cat,
         name: cat.name,
         imageUrl: cat.imageUrl, // Ensure category imageUrl is passed through
+        isActive: cat.isActive !== undefined ? cat.isActive : true, // Default to active if not specified
       }));
+
+      if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+        console.log('[useMenuData] Transformed items:', transformedItems.length);
+        console.log('[useMenuData] Transformed categories:', transformedCategories.length);
+      }
 
       setMenuItems(transformedItems);
       setCategories(transformedCategories);
       setLoading({ isLoading: false, error: null });
     } catch (error) {
+      console.error('[useMenuData] Error fetching menu data:', error);
       const { useApiError } = await import('./api');
       const { handleError } = useApiError();
       const errorMessage = handleError(error);
       setLoading({ isLoading: false, error: errorMessage });
+      // Set empty arrays on error to prevent showing stale data
+      setMenuItems([]);
+      setCategories([]);
     }
   }, []);
 

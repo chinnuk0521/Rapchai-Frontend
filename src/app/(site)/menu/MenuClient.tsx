@@ -109,7 +109,7 @@ export default function MenuClient() {
           {/* Category Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {categories
-              .filter((cat) => cat.isActive === true) // Only show active categories
+              .filter((cat) => cat.isActive !== false) // Show categories unless explicitly inactive
               .map((category) => {
                 // Get item count for this category
                 const itemCount = items.filter((it) => {
@@ -165,7 +165,7 @@ export default function MenuClient() {
           </div>
 
           {/* Empty State for Categories */}
-          {categories.filter((cat) => cat.isActive === true).length === 0 && (
+          {categories.filter((cat) => cat.isActive !== false).length === 0 && (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">📂</div>
               <h3 className="text-2xl font-bold text-[var(--rc-espresso-brown)] mb-2">No categories available</h3>
