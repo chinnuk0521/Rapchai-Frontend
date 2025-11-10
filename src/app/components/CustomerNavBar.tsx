@@ -57,11 +57,8 @@ export default function CustomerNavBar() {
     return (
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--rc-creamy-beige)]/95 border-b-2 border-[var(--rc-orange)]/20 shadow-lg">
       <div className="w-full container-px flex h-16 items-center justify-between">
-        <Link href="/home" className="flex items-center gap-2 hover:opacity-80 transition-opacity" aria-label="RAPCHAI home">
-          <img src="/logo-orange.svg" alt="RAPCHAI" className="h-10 w-10 md:h-12 md:w-12" />
-          <span className="text-xl md:text-2xl font-black tracking-wide text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors">
-            RAPCHAI
-          </span>
+        <Link href="/home" className="flex items-center hover:opacity-80 transition-opacity" aria-label="Home">
+          <img src="/logo-orange.svg" alt="Logo" className="h-14 w-14 md:h-16 md:w-16" />
         </Link>
         
         {/* Desktop Navigation */}
@@ -205,11 +202,8 @@ export default function CustomerNavBar() {
       }`}
     >
       <div className="w-full container-px flex h-16 items-center justify-between">
-        <Link href="/home" className="flex items-center gap-2 hover:opacity-80 transition-opacity" aria-label="RAPCHAI home">
-          <img src="/logo-orange.svg" alt="RAPCHAI" className="h-10 w-10 md:h-12 md:w-12" />
-          <span className="text-xl md:text-2xl font-black tracking-wide text-[var(--rc-espresso-brown)] hover:text-[var(--rc-orange)] transition-colors">
-            RAPCHAI
-          </span>
+        <Link href="/home" className="flex items-center hover:opacity-80 transition-opacity" aria-label="Home">
+          <img src="/logo-orange.svg" alt="Logo" className="h-14 w-14 md:h-16 md:w-16" />
         </Link>
         
         {/* Desktop Navigation */}

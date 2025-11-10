@@ -23,11 +23,8 @@ export default function AdminNavBar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--rc-espresso-brown)]/95 border-b-2 border-[var(--rc-orange)]/30 shadow-lg">
       <div className="w-full container-px flex h-16 items-center justify-between">
-        <Link href="/admin/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity" aria-label="Admin Dashboard">
-          <img src="/logo-orange.svg" alt="RAPCHAI" className="h-10 w-10" />
-          <span className="text-xl font-black tracking-wide text-white hover:text-[var(--rc-orange)] transition-colors">
-            RAPCHAI ADMIN
-          </span>
+        <Link href="/admin/dashboard" className="flex items-center hover:opacity-80 transition-opacity" aria-label="Admin Dashboard">
+          <img src="/logo-orange.svg" alt="Logo" className="h-14 w-14" />
         </Link>
         <nav className="flex items-center gap-6 text-sm">
           <Link 

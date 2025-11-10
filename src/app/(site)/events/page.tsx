@@ -103,10 +103,13 @@ export default function EventsPage() {
     <div className="py-12 bg-[var(--rc-creamy-beige)] min-h-screen">
       <div className="w-[95%] mx-auto px-4">
         <div className="mb-12">
-          <h1 className="text-5xl font-bold text-[var(--rc-espresso-brown)] mb-6">Events at Rapchai</h1>
+          <div className="flex items-center gap-4 mb-6">
+            <img src="/logo-brown.svg" alt="Logo" className="h-16 w-16 md:h-20 md:w-20" />
+            <h1 className="text-5xl font-bold text-[var(--rc-espresso-brown)]">Events</h1>
+          </div>
           <p className="text-xl text-[var(--rc-text-secondary)] max-w-4xl font-medium leading-relaxed">
             Join our vibrant community for rap music events, open mic nights, workshops, and more. 
-            From freestyle battles to beat-making sessions, there's always something happening at Rapchai.
+            From freestyle battles to beat-making sessions, there's always something happening.
           </p>
         </div>
 

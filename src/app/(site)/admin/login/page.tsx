@@ -36,7 +36,10 @@ export default function AdminLogin() {
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-[var(--rc-espresso-brown)] mb-2">Admin Login</h1>
-          <p className="text-[var(--rc-text-secondary)]">Rapchai Café Staff Portal</p>
+          <div className="flex justify-center mb-2">
+            <img src="/logo-brown.svg" alt="Logo" className="h-14 w-14" />
+          </div>
+          <p className="text-[var(--rc-text-secondary)]">Staff Portal</p>
         </div>
         
         <form onSubmit={handleLogin} className="space-y-6">
