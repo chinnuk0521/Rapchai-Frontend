@@ -45,6 +45,9 @@ export default function HomeFooter() {
     <footer className="relative w-full h-screen bg-gradient-to-br from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] flex flex-col justify-center items-center overflow-hidden px-4 md:px-6">
       {/* Main Typing Animation */}
       <div className="text-center max-w-6xl mx-auto w-full">
+        <div className="flex justify-center mb-6 md:mb-8">
+          <img src="/logo-orange.svg" alt="RAPCHAI" className="h-20 w-20 md:h-28 md:w-28 opacity-90" />
+        </div>
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black text-white mb-6 md:mb-8 leading-[1.1] tracking-tight px-4" style={{ 
           fontFamily: 'Inter, system-ui, sans-serif',
           textShadow: '2px 4px 20px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.3)',

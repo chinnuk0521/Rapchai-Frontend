@@ -45,7 +45,10 @@ export default function CustomerMenu({ items }: CustomerMenuProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-black text-[var(--rc-espresso-brown)] mb-4">Rapchai Café</h1>
+        <div className="flex flex-col items-center gap-3 mb-4">
+          <img src="/logo-orange.svg" alt="RAPCHAI" className="h-16 w-16 md:h-20 md:w-20" />
+          <h1 className="text-4xl font-black text-[var(--rc-espresso-brown)]">Rapchai Café</h1>
+        </div>
         <p className="text-lg text-[var(--rc-text-secondary)] font-medium">
           Scan QR Code • Order Online • Pay via UPI
         </p>
