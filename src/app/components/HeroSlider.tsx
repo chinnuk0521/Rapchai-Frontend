@@ -16,7 +16,7 @@ export default function HeroSlider() {
   }, []);
   const slides = [
     {
-      title: "Welcome to Rapchai",
+      title: "Welcome",
       subtitle: "Bangalore's first cafe focussed on community building.",
       cta: { label: "Order Now", href: "https://wa.me/918792896633", external: true },
       bgUrl: IMG.hero1,
@@ -49,8 +49,10 @@ export default function HeroSlider() {
       <section className="relative w-full h-screen overflow-hidden">
         <div className="relative h-screen w-full bg-gradient-to-br from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] flex items-center justify-center">
           <div className="text-center text-white">
-            <div className="text-xl uppercase tracking-[0.2em] opacity-95 font-semibold text-[var(--rc-creamy-beige)] mb-6">Rapchai</div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight">Welcome to Rapchai</h1>
+            <div className="flex justify-center mb-6">
+              <img src="/logo-orange.svg" alt="Logo" className="h-20 w-20 md:h-24 md:w-24 opacity-95" />
+            </div>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight">Welcome</h1>
             <p className="text-xl sm:text-2xl lg:text-3xl text-white font-semibold mb-10 max-w-4xl mx-auto leading-relaxed">Bangalore's first cafe focussed on community building.</p>
           </div>
         </div>
@@ -82,8 +84,7 @@ export default function HeroSlider() {
               <div className="relative z-10 h-full flex items-center justify-center">
                 <div className="text-center text-white max-w-6xl mx-auto px-4">
                   <div className="flex flex-col items-center gap-3 mb-6">
-                    <img src="/logo-orange.svg" alt="RAPCHAI" className="h-16 w-16 md:h-20 md:w-20 opacity-95" />
-                    <div className="text-xl uppercase tracking-[0.2em] opacity-95 font-semibold text-[var(--rc-creamy-beige)] letter-spacing-wide" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Rapchai</div>
+                    <img src="/logo-orange.svg" alt="Logo" className="h-20 w-20 md:h-24 md:w-24 opacity-95" />
                   </div>
                   <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight" style={{ 
                     fontFamily: 'Inter, system-ui, sans-serif',

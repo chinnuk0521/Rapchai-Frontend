@@ -16,7 +16,7 @@ export default function MenuPage() {
       <div className="w-full container-px">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6 md:mb-8">
           <div className="flex items-center gap-3">
-            <img src="/logo-orange.svg" alt="RAPCHAI" className="h-10 w-10 md:h-12 md:w-12" />
+            <img src="/logo-orange.svg" alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-[var(--rc-espresso-brown)]">Menu</h1>
           </div>
         </div>

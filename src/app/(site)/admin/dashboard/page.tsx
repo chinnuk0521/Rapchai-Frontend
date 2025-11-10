@@ -790,7 +790,10 @@ function AdminDashboardContent() {
       <div className="bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] text-white py-4">
         <div className="w-[95%] mx-auto px-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Rapchai Admin Dashboard</h1>
+            <div className="flex items-center gap-3">
+              <img src="/logo-orange.svg" alt="Logo" className="h-10 w-10" />
+              <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+            </div>
             <p className="text-sm opacity-90">Staff Portal</p>
           </div>
           <button

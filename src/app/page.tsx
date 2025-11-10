@@ -12,13 +12,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--rc-creamy-beige)] via-white to-[var(--rc-creamy-beige)] flex items-center justify-center p-4">
       <div className="text-center max-w-2xl mx-auto">
-        {/* Logo / Café Name */}
+        {/* Logo */}
         <div className="mb-8">
           <div className="flex flex-col items-center gap-4 mb-4">
-            <img src="/logo-orange.svg" alt="RAPCHAI" className="h-24 w-24 md:h-32 md:w-32" />
-            <h1 className="text-6xl md:text-8xl font-black tracking-wide text-[var(--rc-espresso-brown)]">
-              RAPCHAI
-            </h1>
+            <img src="/logo-orange.svg" alt="Logo" className="h-32 w-32 md:h-40 md:w-40" />
           </div>
           <div className="h-1 w-24 bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] mx-auto rounded-full"></div>
         </div>

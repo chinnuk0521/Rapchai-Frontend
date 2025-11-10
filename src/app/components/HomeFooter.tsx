@@ -9,7 +9,7 @@ export default function HomeFooter() {
   const [teamIndex, setTeamIndex] = useState(0);
   
   const mainText = "Thanks for your visit";
-  const teamTextFull = "- Team Rapchai";
+  const teamTextFull = "- Team";
   const typingSpeed = 100;
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function HomeFooter() {
       {/* Main Typing Animation */}
       <div className="text-center max-w-6xl mx-auto w-full">
         <div className="flex justify-center mb-6 md:mb-8">
-          <img src="/logo-orange.svg" alt="RAPCHAI" className="h-20 w-20 md:h-28 md:w-28 opacity-90" />
+          <img src="/logo-orange.svg" alt="Logo" className="h-24 w-24 md:h-32 md:w-32 opacity-90" />
         </div>
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-black text-white mb-6 md:mb-8 leading-[1.1] tracking-tight px-4" style={{ 
           fontFamily: 'Inter, system-ui, sans-serif',

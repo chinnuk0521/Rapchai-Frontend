@@ -114,7 +114,7 @@ export default function OnboardingPage() {
       <div className="max-w-4xl mx-auto w-full">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-[var(--rc-espresso-brown)] mb-4">
-            Welcome to Rapchai
+            Welcome
           </h1>
           <p className="text-xl text-[var(--rc-text-secondary)] font-medium">
             Choose how you'd like to continue

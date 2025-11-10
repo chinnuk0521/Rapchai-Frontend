@@ -452,7 +452,7 @@ ${formData.message}
 
       {/* Why Choose Us Section */}
       <div className="mt-16">
-        <h2 className="text-3xl font-bold text-center mb-12 text-[var(--rc-espresso-brown)]">Why Choose Rapchai?</h2>
+        <h2 className="text-3xl font-bold text-center mb-12 text-[var(--rc-espresso-brown)]">Why Choose Us?</h2>
         <div className="grid md:grid-cols-3 gap-8">
           <div className="text-center p-6">
             <div className="w-16 h-16 bg-[var(--rc-orange)]/20 rounded-full flex items-center justify-center mx-auto mb-4">
