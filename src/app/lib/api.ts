@@ -40,6 +40,12 @@ const getApiBaseUrl = (): string => {
 
 const API_BASE_URL = getApiBaseUrl();
 
+// Log API base URL in development/production for debugging
+if (typeof window !== 'undefined') {
+  console.log('[API] Base URL:', API_BASE_URL);
+  console.log('[API] Environment URL:', process.env.NEXT_PUBLIC_API_URL);
+}
+
 // API Response Types
 export interface ApiResponse<T> {
   data?: T;
@@ -88,6 +94,11 @@ async function apiRequest<T>(
     },
   };
 
+  // Log the full URL being called for debugging
+  if (typeof window !== 'undefined') {
+    console.log('[API] Making request to:', url);
+  }
+
   try {
     const response = await fetch(url, config);
     
@@ -101,8 +112,19 @@ async function apiRequest<T>(
     }
 
     const data = await response.json();
+    
+    // Log successful response for debugging
+    if (typeof window !== 'undefined') {
+      console.log('[API] Response from:', url, 'Status:', response.status);
+    }
+    
     return data;
   } catch (error) {
+    // Log errors for debugging
+    if (typeof window !== 'undefined') {
+      console.error('[API] Error calling:', url, error);
+    }
+    
     if (error instanceof ApiError) {
       throw error;
     }

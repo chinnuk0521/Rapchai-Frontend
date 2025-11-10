@@ -81,7 +81,10 @@ export default function HeroSlider() {
               <div className="absolute inset-0 bg-[var(--rc-espresso-brown)]/40" />
               <div className="relative z-10 h-full flex items-center justify-center">
                 <div className="text-center text-white max-w-6xl mx-auto px-4">
-                  <div className="text-xl uppercase tracking-[0.2em] opacity-95 font-semibold text-[var(--rc-creamy-beige)] mb-6 letter-spacing-wide" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Rapchai</div>
+                  <div className="flex flex-col items-center gap-3 mb-6">
+                    <img src="/logo-orange.svg" alt="RAPCHAI" className="h-16 w-16 md:h-20 md:w-20 opacity-95" />
+                    <div className="text-xl uppercase tracking-[0.2em] opacity-95 font-semibold text-[var(--rc-creamy-beige)] letter-spacing-wide" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>Rapchai</div>
+                  </div>
                   <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight" style={{ 
                     fontFamily: 'Inter, system-ui, sans-serif',
                     textShadow: '2px 4px 20px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.3)',

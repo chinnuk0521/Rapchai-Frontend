@@ -25,7 +25,10 @@ export default function ConditionalFooter() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Brand Section */}
             <div className="space-y-4">
-              <div className="text-xl md:text-2xl font-black text-[var(--rc-espresso-brown)]">RAPCHAI</div>
+              <div className="flex items-center gap-3">
+                <img src="/logo-brown.svg" alt="RAPCHAI" className="h-12 w-12 md:h-16 md:w-16" />
+                <div className="text-xl md:text-2xl font-black text-[var(--rc-espresso-brown)]">RAPCHAI</div>
+              </div>
               <p className="text-sm md:text-base text-[var(--rc-text-secondary)] leading-relaxed">
                 Koramangala, Bangalore — Café meets culture.
               </p>

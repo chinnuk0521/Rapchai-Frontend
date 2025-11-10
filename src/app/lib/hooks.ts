@@ -48,35 +48,112 @@ export function useMenuData() {
       // Import services dynamically to avoid circular dependencies
       const { menuApi } = await import('./services');
       
-      const [itemsResponse, categoriesResponse] = await Promise.all([
+      // Fetch items and categories separately to handle partial failures gracefully
+      // If one fails, we can still show the other
+      const [itemsResponse, categoriesResponse] = await Promise.allSettled([
         menuApi.getMenuItems({ limit: 100 }), // Get all items
         menuApi.getCategories({ limit: 100 }), // Get all categories
       ]);
 
+      // Handle responses - check if they succeeded or failed
+      let itemsResponseData: any = null;
+      let categoriesResponseData: any = null;
+      const errors: string[] = [];
+
+      if (itemsResponse.status === 'fulfilled') {
+        itemsResponseData = itemsResponse.value;
+      } else {
+        const error = itemsResponse.reason;
+        const errorMessage = error?.message || error?.response?.message || 'Unknown error';
+        console.error('[useMenuData] Failed to fetch items:', error);
+        errors.push(`Failed to load menu items: ${errorMessage}`);
+      }
+
+      if (categoriesResponse.status === 'fulfilled') {
+        categoriesResponseData = categoriesResponse.value;
+      } else {
+        const error = categoriesResponse.reason;
+        const errorMessage = error?.message || error?.response?.message || 'Unknown error';
+        console.error('[useMenuData] Failed to fetch categories:', error);
+        errors.push(`Failed to load categories: ${errorMessage}`);
+      }
+
+      // Log responses for debugging
+      if (typeof window !== 'undefined') {
+        console.log('[useMenuData] Items response:', itemsResponseData);
+        console.log('[useMenuData] Categories response:', categoriesResponseData);
+        if (itemsResponseData) {
+          console.log('[useMenuData] Items response keys:', Object.keys(itemsResponseData || {}));
+        }
+        if (categoriesResponseData) {
+          console.log('[useMenuData] Categories response keys:', Object.keys(categoriesResponseData || {}));
+        }
+      }
+
+      // Extract data from API response
+      // Backend returns: { items: [...], pagination: {...} } or { categories: [...], pagination: {...} }
+      // Also support legacy formats: { data: [...] } or raw arrays for backward compatibility
+      const itemsData =
+        itemsResponseData?.items ??
+        itemsResponseData?.data ??
+        (Array.isArray(itemsResponseData) ? itemsResponseData : []);
+      const categoriesData =
+        categoriesResponseData?.categories ??
+        categoriesResponseData?.data ??
+        (Array.isArray(categoriesResponseData) ? categoriesResponseData : []);
+
+      // Log extracted data for debugging
+      if (typeof window !== 'undefined') {
+        console.log('[useMenuData] Extracted itemsData:', itemsData.length, itemsData);
+        console.log('[useMenuData] Extracted categoriesData:', categoriesData.length, categoriesData);
+      }
+
       // Transform API data to frontend format
-      const transformedItems = (itemsResponse.data || []).map((item: any) => ({
-        ...item,
-        price: item.pricePaise / 100, // Convert paise to rupees
-        veg: item.isVeg,
-        available: item.isAvailable,
+      // Map all fields from Supabase schema: id, name, description, pricePaise, imageUrl, isVeg, isAvailable, isActive, calories, prepTime, categoryId, sortOrder, createdAt, updatedAt
+      const transformedItems = (itemsData || []).map((item: any) => ({
+        ...item, // Preserve all original fields from database
+        // Computed/transformed fields for frontend compatibility
+        price: item.pricePaise ? item.pricePaise / 100 : (item.price || 0), // Convert paise to rupees
+        veg: item.isVeg ?? item.veg ?? true, // Default to veg if not specified
+        available: item.isAvailable ?? item.available ?? true, // Default to available if not specified
         title: item.name, // For backward compatibility
-        imageUrl: item.imageUrl, // Ensure imageUrl is passed through
       }));
 
-      const transformedCategories = (categoriesResponse.data || []).map((cat: any) => ({
-        ...cat,
-        name: cat.name,
-        imageUrl: cat.imageUrl, // Ensure category imageUrl is passed through
+      // Map all fields from Supabase schema: id, name, slug, description, imageUrl, isActive, sortOrder, createdAt, updatedAt
+      const transformedCategories = (categoriesData || []).map((cat: any) => ({
+        ...cat, // Preserve all original fields from database
+        // Only set default for isActive if not specified
+        isActive: cat.isActive !== undefined ? cat.isActive : true, // Default to active if not specified
       }));
+
+      if (typeof window !== 'undefined') {
+        console.log('[useMenuData] Transformed items:', transformedItems.length);
+        console.log('[useMenuData] Transformed categories:', transformedCategories.length);
+      }
 
       setMenuItems(transformedItems);
       setCategories(transformedCategories);
-      setLoading({ isLoading: false, error: null });
+      
+      // Only show error if both requests failed
+      // If one succeeded, we can still show partial data
+      if (errors.length > 0 && transformedItems.length === 0 && transformedCategories.length === 0) {
+        setLoading({ isLoading: false, error: errors.join('; ') });
+      } else if (errors.length > 0) {
+        // Partial failure - show warning but still display available data
+        console.warn('[useMenuData] Partial data loaded with errors:', errors);
+        setLoading({ isLoading: false, error: null });
+      } else {
+        setLoading({ isLoading: false, error: null });
+      }
     } catch (error) {
+      console.error('[useMenuData] Error fetching menu data:', error);
       const { useApiError } = await import('./api');
       const { handleError } = useApiError();
       const errorMessage = handleError(error);
       setLoading({ isLoading: false, error: errorMessage });
+      // Set empty arrays on error to prevent showing stale data
+      setMenuItems([]);
+      setCategories([]);
     }
   }, []);
 
