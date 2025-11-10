@@ -26,7 +26,7 @@ export default function ConditionalFooter() {
             {/* Brand Section */}
             <div className="space-y-4">
               <div className="flex items-center">
-                <img src="/logo-brown.svg" alt="Logo" className="h-16 w-16 md:h-20 md:w-20" />
+                <img src="/logo-brown.svg" alt="Logo" className="h-20 w-20 md:h-24 md:w-24" />
               </div>
               <p className="text-sm md:text-base text-[var(--rc-text-secondary)] leading-relaxed">
                 Koramangala, Bangalore — Café meets culture.

@@ -791,7 +791,7 @@ function AdminDashboardContent() {
         <div className="w-[95%] mx-auto px-4 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <img src="/logo-orange.svg" alt="Logo" className="h-10 w-10" />
+              <img src="/logo-orange.svg" alt="Logo" className="h-14 w-14" />
               <h1 className="text-2xl font-bold">Admin Dashboard</h1>
             </div>
             <p className="text-sm opacity-90">Staff Portal</p>

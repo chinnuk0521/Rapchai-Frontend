@@ -15,7 +15,7 @@ export default function LandingPage() {
         {/* Logo */}
         <div className="mb-8">
           <div className="flex flex-col items-center gap-4 mb-4">
-            <img src="/logo-orange.svg" alt="Logo" className="h-32 w-32 md:h-40 md:w-40" />
+            <img src="/logo-orange.svg" alt="Logo" className="h-40 w-40 md:h-48 md:w-48" />
           </div>
           <div className="h-1 w-24 bg-gradient-to-r from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] mx-auto rounded-full"></div>
         </div>

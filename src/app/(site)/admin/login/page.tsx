@@ -37,7 +37,7 @@ export default function AdminLogin() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-[var(--rc-espresso-brown)] mb-2">Admin Login</h1>
           <div className="flex justify-center mb-2">
-            <img src="/logo-brown.svg" alt="Logo" className="h-10 w-10" />
+            <img src="/logo-brown.svg" alt="Logo" className="h-14 w-14" />
           </div>
           <p className="text-[var(--rc-text-secondary)]">Staff Portal</p>
         </div>

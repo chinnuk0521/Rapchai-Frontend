@@ -50,7 +50,7 @@ export default function HeroSlider() {
         <div className="relative h-screen w-full bg-gradient-to-br from-[var(--rc-orange)] to-[var(--rc-espresso-brown)] flex items-center justify-center">
           <div className="text-center text-white">
             <div className="flex justify-center mb-6">
-              <img src="/logo-orange.svg" alt="Logo" className="h-20 w-20 md:h-24 md:w-24 opacity-95" />
+              <img src="/logo-orange.svg" alt="Logo" className="h-28 w-28 md:h-32 md:w-32 opacity-95" />
             </div>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight">Welcome</h1>
             <p className="text-xl sm:text-2xl lg:text-3xl text-white font-semibold mb-10 max-w-4xl mx-auto leading-relaxed">Bangalore's first cafe focussed on community building.</p>
@@ -84,7 +84,7 @@ export default function HeroSlider() {
               <div className="relative z-10 h-full flex items-center justify-center">
                 <div className="text-center text-white max-w-6xl mx-auto px-4">
                   <div className="flex flex-col items-center gap-3 mb-6">
-                    <img src="/logo-orange.svg" alt="Logo" className="h-20 w-20 md:h-24 md:w-24 opacity-95" />
+                    <img src="/logo-orange.svg" alt="Logo" className="h-28 w-28 md:h-32 md:w-32 opacity-95" />
                   </div>
                   <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight" style={{ 
                     fontFamily: 'Inter, system-ui, sans-serif',
